@@ -1,0 +1,51 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <h1 class="display-4 fw-bold">Bienvenido al Sistema de Gestión</h1>
+            <p class="lead text-muted">Optimiza y controla la administración de tu negocio con nuestra plataforma eficiente y fácil de usar.</p>
+
+            <div class="mt-4">
+                <a href="@Url.Action("Login", "Account")" class="btn btn-primary btn-lg me-2">
+                    <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
+                </a>
+                <a href="@Url.Action("Register", "Account")" class="btn btn-outline-secondary btn-lg">
+                    <i class="bi bi-person-plus"></i> Registrarse
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5 text-center">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <i class="bi bi-graph-up text-primary display-6"></i>
+                    <h5 class="mt-3">Reportes en tiempo real</h5>
+                    <p class="text-muted">Visualiza estadísticas detalladas para la mejor toma de decisiones.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <i class="bi bi-boxes text-success display-6"></i>
+                    <h5 class="mt-3">Gestión de productos</h5>
+                    <p class="text-muted">Administra tu inventario y controla tus ventas de manera eficiente.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <i class="bi bi-people text-danger display-6"></i>
+                    <h5 class="mt-3">Usuarios y permisos</h5>
+                    <p class="text-muted">Configura roles y permisos para cada usuario de la plataforma.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
