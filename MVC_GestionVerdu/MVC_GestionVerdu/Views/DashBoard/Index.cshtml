@@ -1,0 +1,195 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-3 col-lg-2 d-md-block bg-dark sidebar vh-100">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column text-white">
+                    <li class="nav-item">
+                        <a class="nav-link active text-white" href="#">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+                    <!-- Productos desplegable -->
+                    <li class="nav-item">
+                        <a class="nav-link text-white" data-bs-toggle="collapse" href="#productosCollapse" role="button" aria-expanded="false" aria-controls="productosCollapse">
+                            <i class="bi bi-box-seam"></i> Productos
+                        </a>
+                        <div class="collapse" id="productosCollapse">
+                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small ps-3">
+                                <li><a class="nav-link text-white" href="@Url.Action("Index", "Productos")">Ver Productos</a></li>
+                                <li><a class="nav-link text-white" href="@Url.Action("Agregar", "Productos")">Agregar Producto</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <!-- Ingresos desplegable -->
+                    <li class="nav-item">
+                        <a class="nav-link text-white" data-bs-toggle="collapse" href="#ingresosCollapse" role="button" aria-expanded="false" aria-controls="ingresosCollapse">
+                            <i class="bi bi-cash-stack"></i> Ingresos
+                        </a>
+                        <div class="collapse" id="ingresosCollapse">
+                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small ps-3">
+                                <li><a class="nav-link text-white" href="@Url.Action("Index", "Ingresos")">Ver Ingresos</a></li>
+                                <li><a class="nav-link text-white" href="@Url.Action("Agregar", "Ingresos")">Agregar Ingreso</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <!-- Gastos desplegable -->
+                    <li class="nav-item">
+                        <a class="nav-link text-white" data-bs-toggle="collapse" href="#gastosCollapse" role="button" aria-expanded="false" aria-controls="gastosCollapse">
+                            <i class="bi bi-receipt"></i> Gastos
+                        </a>
+                        <div class="collapse" id="gastosCollapse">
+                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small ps-3">
+                                <li><a class="nav-link text-white" href="@Url.Action("Index", "Gastos")">Ver Gastos</a></li>
+                                <li><a class="nav-link text-white" href="@Url.Action("Agregar", "Gastos")">Agregar Gasto</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Contenido Principal -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <h1 class="mt-4">Dashboard</h1>
+
+            <!-- Tarjetas de resumen -->
+            <div class="row my-4">
+                <div class="col-md-4">
+                    <div class="card bg-primary text-white shadow">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Productos</h5>
+                            <p class="card-text fs-3">150</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-success text-white shadow">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Ingresos</h5>
+                            <p class="card-text fs-3">$12,500</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card bg-danger text-white shadow">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Gastos</h5>
+                            <p class="card-text fs-3">$3,200</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabla de Productos -->
+            <div class="card shadow mb-4">
+                <div class="card-header bg-dark text-white">
+                    <h5>Lista de Productos</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Categoría</th>
+                                <th>Precio</th>
+                                <th>Stock</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Manzana</td>
+                                <td>Frutas</td>
+                                <td>$1.50</td>
+                                <td>100</td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning">Editar</button>
+                                    <button class="btn btn-sm btn-danger">Eliminar</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Lechuga</td>
+                                <td>Verduras</td>
+                                <td>$0.80</td>
+                                <td>50</td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning">Editar</button>
+                                    <button class="btn btn-sm btn-danger">Eliminar</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tabla de Ingresos -->
+          @*   <div class="card shadow mb-4">
+                <div class="card-header bg-dark text-white">
+                    <h5>Ingresos</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Cliente</th>
+                                <th>Monto</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2025-02-20</td>
+                                <td>Juan Pérez</td>
+                                <td>$150</td>
+                            </tr>
+                            <tr>
+                                <td>2025-02-21</td>
+                                <td>Maria López</td>
+                                <td>$200</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div> *@
+
+            <!-- Tabla de Gastos -->
+           @*  <div class="card shadow mb-4">
+                <div class="card-header bg-dark text-white">
+                    <h5>Gastos</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Descripción</th>
+                                <th>Monto</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2025-02-20</td>
+                                <td>Compra de insumos</td>
+                                <td>$500</td>
+                            </tr>
+                            <tr>
+                                <td>2025-02-21</td>
+                                <td>Pago de alquiler</td>
+                                <td>$700</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div> *@
+
+        </main>
+    </div>
+</div>
+
+<!-- Bootstrap Icons (opcional) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">

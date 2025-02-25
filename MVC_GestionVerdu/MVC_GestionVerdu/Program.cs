@@ -10,9 +10,20 @@ builder.Services.AddScoped<ICategoriaService, CategoriaServices>();
 builder.Services.AddScoped<IUsuarioService, UsuarioServices>();
 builder.Services.AddScoped<IVentaService, VentasServices>();
 builder.Services.AddScoped<IGastoService, GastosServices>();
+builder.Services.AddScoped<IAuthService, AuthServices>();
 
 builder.Services.AddDbContext<VerduGestionDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection")));
+
+
+// Agregar servicios para la sesión
+builder.Services.AddDistributedMemoryCache(); // Almacén en memoria para la sesión
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Tiempo de expiración de la sesión
+    options.Cookie.HttpOnly = true; // Seguridad contra scripts
+    options.Cookie.IsEssential = true; // Necesario para la funcionalidad esencial
+});
 
 
 
@@ -29,6 +40,9 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+
+app.UseSession(); // Importante: Esto debe estar antes de `app.UseAuthorization()`
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
