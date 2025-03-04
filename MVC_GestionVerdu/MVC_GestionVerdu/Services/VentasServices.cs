@@ -18,20 +18,19 @@ namespace MVC_GestionVerdu.Services
             
         }
 
-        public async Task<IEnumerable<DetallesVenta>> GetVentas()
+        public async Task<IEnumerable<DetallesVenta>> GetVentas(int usuarioId)
         {
+            var ListaVentas = await _context.DetallesVentas
+                                            .Include(i => i.MetodoPago)
+                                            .Where(v => v.UsuarioId == usuarioId) // Filtrar por UsuarioId
+                                            .ToListAsync();
 
-            var ListaVentas = await _context.DetallesVentas.ToListAsync();
             return ListaVentas;
-
-
-
-
         }
 
 
 
-       
+
 
         public async Task<DetallesVenta> GetVentasById(int id)
         {

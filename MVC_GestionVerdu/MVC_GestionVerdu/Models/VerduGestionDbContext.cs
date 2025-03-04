@@ -28,6 +28,9 @@ public partial class VerduGestionDbContext : DbContext
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { 
+    
+    
+    
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -103,6 +106,15 @@ public partial class VerduGestionDbContext : DbContext
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(100)
                 .IsUnicode(false);
+            entity.Property(e => e.MargenGanancia).HasColumnType("decimal(5, 2)");
+            entity.Property(e => e.PesoCajon).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.PrecioCajon).HasColumnType("decimal(10, 2)");
+
+            entity.Property(e => e.PrecioCosto).HasColumnType("decimal(10,2)");
+
+
+            entity.Property(e => e.PrecioFinal).HasColumnType("numeric(36, 20)");
+
             entity.Property(e => e.UsuarioId).HasColumnName("Usuario_Id");
 
             entity.HasOne(d => d.Categoria).WithMany(p => p.Productos)

@@ -17,8 +17,6 @@ namespace MVC_GestionVerdu.Controllers
         public async Task< IActionResult> Index()
         {
             
-            
-            
             return View();
         }
 

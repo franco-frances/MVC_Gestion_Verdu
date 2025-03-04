@@ -1,0 +1,38 @@
+﻿@model IEnumerable<MVC_GestionVerdu.Models.DetallesVenta>
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-dark text-white">
+            <h5>Lista de Ingresos</h5>
+        </div>
+        <div class="card-body">
+            <table id="tablaIngresos" class="table table-striped table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Método de Pago</th>
+                        <th>Concepto</th>
+                        <th>Monto ($)</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var ingreso in Model)
+
+                    {
+                        <tr>
+                            <td>@ingreso.Fecha.ToString("dd/MM/yyyy")</td>
+                            <td>@ingreso.MetodoPago.Descripcion</td>
+                            <td>@ingreso.Concepto</td>
+                            <td>@ingreso.Monto.ToString("C")</td>
+                            <td>
+                                <a asp-action="Editar" asp-route-id="@ingreso.IdDetalleVenta" class="btn btn-sm btn-warning">Editar</a>
+                                <a href="javascript:void(0);" class="btn btn-sm btn-danger" onclick="confirmarEliminacion(@ingreso.IdDetalleVenta,'/DetallesVenta/Eliminar')">Eliminar</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

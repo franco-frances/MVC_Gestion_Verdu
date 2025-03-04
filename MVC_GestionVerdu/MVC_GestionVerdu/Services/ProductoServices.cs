@@ -22,9 +22,9 @@ namespace MVC_GestionVerdu.Services
         }
 
 
-        public async Task<IEnumerable<Producto>> ListarProductos()
+        public async Task<IEnumerable<Producto>> ListarProductos(int usuarioId)
         {
-            var productos = await _context.Productos.ToListAsync();
+            var productos = await _context.Productos.Where(u=> u.UsuarioId==usuarioId).ToListAsync();
             return productos;
         }
 

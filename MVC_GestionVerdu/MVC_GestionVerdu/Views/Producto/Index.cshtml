@@ -1,0 +1,70 @@
+﻿@model Producto
+
+
+
+<div class="card shadow">
+    <div class="card-header bg-dark text-white">
+        <h5>Agregar Producto</h5>
+    </div>
+    <div class="card-body">
+        <form asp-controller="Producto" asp-action="Create" method="post">
+            <div class="mb-3">
+                <label for="Descripcion" class="form-label">Nombre</label>
+                <input asp-for="Descripcion" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="CategoriaId" class="form-label">Categoría</label>
+                <select asp-for="CategoriaId" class="form-select" required>
+                    <option value="">Seleccione una categoría</option>
+                    @foreach (var categoria in ViewBag.Categorias)
+                    {
+                        <option value="@categoria.IdCategoria">@categoria.Descripcion</option>
+                    }
+                </select>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="PrecioCajon" class="form-label">Precio del Cajón ($)</label>
+                    <input asp-for="PrecioCajon" id="PrecioCajon" class="form-control" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="PesoCajon" class="form-label">Peso del Cajón (kg)</label>
+                    <input asp-for="PesoCajon" id="PesoCajon" class="form-control" required>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="MargenGanancia" class="form-label">Porcentaje de Ganancia (%)</label>
+                <input asp-for="MargenGanancia" id="MargenGanancia" class="form-control" required>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="PrecioCosto" class="form-label">Precio Costo x Kg ($)</label>
+                    <input asp-for="PrecioCosto" id="PrecioCosto" class="form-control" style="background-color: #e7f1ff; border: 2px solid #007bff;" readonly>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="PrecioFinal" class="form-label">Precio Final ($)</label>
+                    <input asp-for="PrecioFinal" id="PrecioFinal" class="form-control" style="background-color: #e7f1ff; border: 2px solid #007bff;">
+                </div>
+            </div>
+
+
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+
+            @if (TempData["MensajeAgregado"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["Mensaje"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+
+
+        </form>
+    </div>
+</div>

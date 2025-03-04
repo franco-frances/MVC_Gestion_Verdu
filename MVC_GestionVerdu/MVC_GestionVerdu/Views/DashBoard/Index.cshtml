@@ -1,4 +1,8 @@
-﻿@{
+﻿@model IEnumerable<Producto>
+
+
+
+@{
     ViewData["Title"] = "Dashboard";
 }
 
@@ -20,8 +24,9 @@
                         </a>
                         <div class="collapse" id="productosCollapse">
                             <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small ps-3">
-                                <li><a class="nav-link text-white" href="@Url.Action("Index", "Productos")">Ver Productos</a></li>
-                                <li><a class="nav-link text-white" href="@Url.Action("Agregar", "Productos")">Agregar Producto</a></li>
+                                
+                                <li><a class="nav-link text-white" href="@Url.Action("Index", "Producto")">Agregar Producto</a></li>
+
                             </ul>
                         </div>
                     </li>
@@ -32,8 +37,8 @@
                         </a>
                         <div class="collapse" id="ingresosCollapse">
                             <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small ps-3">
-                                <li><a class="nav-link text-white" href="@Url.Action("Index", "Ingresos")">Ver Ingresos</a></li>
-                                <li><a class="nav-link text-white" href="@Url.Action("Agregar", "Ingresos")">Agregar Ingreso</a></li>
+                                <li><a class="nav-link text-white" href="@Url.Action("Index", "DetallesVenta")">Ver Ingresos</a></li>
+                                <li><a class="nav-link text-white" href="@Url.Action("AgregarVenta", "DetallesVenta")">Agregar Ingreso</a></li>
                             </ul>
                         </div>
                     </li>
@@ -45,7 +50,7 @@
                         <div class="collapse" id="gastosCollapse">
                             <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small ps-3">
                                 <li><a class="nav-link text-white" href="@Url.Action("Index", "Gastos")">Ver Gastos</a></li>
-                                <li><a class="nav-link text-white" href="@Url.Action("Agregar", "Gastos")">Agregar Gasto</a></li>
+                                <li><a class="nav-link text-white" href="@Url.Action("AgregarGasto", "Gastos")">Agregar Gasto</a></li>
                             </ul>
                         </div>
                     </li>
@@ -85,6 +90,9 @@
                 </div>
             </div>
 
+           
+
+
             <!-- Tabla de Productos -->
             <div class="card shadow mb-4">
                 <div class="card-header bg-dark text-white">
@@ -95,33 +103,24 @@
                         <thead>
                             <tr>
                                 <th>Nombre</th>
-                                <th>Categoría</th>
                                 <th>Precio</th>
-                                <th>Stock</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Manzana</td>
-                                <td>Frutas</td>
-                                <td>$1.50</td>
-                                <td>100</td>
-                                <td>
-                                    <button class="btn btn-sm btn-warning">Editar</button>
-                                    <button class="btn btn-sm btn-danger">Eliminar</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Lechuga</td>
-                                <td>Verduras</td>
-                                <td>$0.80</td>
-                                <td>50</td>
-                                <td>
-                                    <button class="btn btn-sm btn-warning">Editar</button>
-                                    <button class="btn btn-sm btn-danger">Eliminar</button>
-                                </td>
-                            </tr>
+                            @foreach (var producto in Model)
+                            {
+                                <tr>
+                                    <td>@producto.Descripcion</td>
+                                    <td>$@producto.PrecioFinal</td> <!-- O usa @producto.PrecioCosto si lo prefieres -->
+                                    
+                                    <td>
+                                        <a asp-action="Editar" asp-route-id="@producto.IdProductos" class="btn btn-sm btn-warning">Editar</a>
+                                        <a href="javascript:void(0);" class="btn btn-sm btn-danger"
+                                           onclick="confirmarEliminacion(@producto.IdProductos,'/DashBoard/Eliminar')">Eliminar</a>
+                                    </td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
                 </div>

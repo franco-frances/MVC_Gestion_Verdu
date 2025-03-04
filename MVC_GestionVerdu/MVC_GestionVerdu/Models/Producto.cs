@@ -13,7 +13,16 @@ public partial class Producto
 
     public int? UsuarioId { get; set; }
 
-    public virtual Categoria? Categoria { get; set; } 
+    public decimal PrecioCajon { get; set; }
+
+    public decimal PesoCajon { get; set; }
+
+    public decimal MargenGanancia { get; set; }
+
+    public decimal PrecioCosto { get; set; }
+    public decimal? PrecioFinal { get; set; }
+
+    public virtual Categoria? Categoria { get; set; }
 
     public virtual Usuario? Usuario { get; set; }
 }

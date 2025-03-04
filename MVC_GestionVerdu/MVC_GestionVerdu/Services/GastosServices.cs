@@ -18,17 +18,20 @@ namespace MVC_GestionVerdu.Services
         }
 
 
-        public async Task<IEnumerable<Gastos>> GetGastos()
+        public async Task<IEnumerable<Gastos>> GetGastos(int idUsuario)
         {
 
-            var gastos = await _context.Gastos.ToListAsync();
+
+
+            var gastos = await _context.Gastos.Where(u=> u.UsuarioId==idUsuario).ToListAsync();
+            
             return gastos;
 
 
         }
 
         
-        public async Task<Gastos> GetGastById(int id)
+        public async Task<Gastos> GetGastoById(int id)
         {
 
             var gasto = await _context.Gastos.FirstOrDefaultAsync(g => g.IdGasto == id);

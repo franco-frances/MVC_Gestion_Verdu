@@ -11,6 +11,7 @@ builder.Services.AddScoped<IUsuarioService, UsuarioServices>();
 builder.Services.AddScoped<IVentaService, VentasServices>();
 builder.Services.AddScoped<IGastoService, GastosServices>();
 builder.Services.AddScoped<IAuthService, AuthServices>();
+builder.Services.AddScoped<IMetodoPagoService,MetodoPagosServices>();
 
 builder.Services.AddDbContext<VerduGestionDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection")));

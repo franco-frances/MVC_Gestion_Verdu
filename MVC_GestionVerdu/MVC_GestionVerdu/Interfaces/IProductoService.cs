@@ -5,7 +5,7 @@ namespace MVC_GestionVerdu.Interfaces
 {
     public interface IProductoService
     {
-        Task<IEnumerable<Producto>> ListarProductos();
+        Task<IEnumerable<Producto>> ListarProductos(int usuarioId);
         Task<Producto> GetProducto(int id);
         Task AgregarProducto(Producto producto);
         Task EditarProducto(Producto producto);
