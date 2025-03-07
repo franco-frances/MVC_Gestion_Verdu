@@ -39,6 +39,15 @@ namespace MVC_GestionVerdu.Services
 
 
         }
+
+        public async Task<IEnumerable<Gastos>> GetGastosDelDia(int usuarioId, DateTime fechaActual) {
+
+            var gastos = await _context.Gastos
+                                .Where(v => v.UsuarioId == usuarioId && v.Fecha == fechaActual)
+                                .ToListAsync();
+            return gastos;
+
+        }
                
 
         public async Task AgregarGasto(Gastos gasto)

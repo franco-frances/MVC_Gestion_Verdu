@@ -60,3 +60,23 @@ function confirmarEliminacion(id, url) {
         }
     });
 }
+
+function filtrarProductos() {
+    let buscador = document.getElementById("buscador").value.toLowerCase();
+    let categoriaSeleccionada = document.getElementById("filtroCategoria").value;
+    let filas = document.querySelectorAll(".producto-row");
+
+    filas.forEach(fila => {
+        let nombre = fila.querySelector(".nombre").textContent.toLowerCase();
+        let categoria = fila.getAttribute("data-categoria");
+
+        let coincideNombre = nombre.includes(buscador);
+        let coincideCategoria = categoriaSeleccionada === "" || categoria === categoriaSeleccionada;
+
+        if (coincideNombre && coincideCategoria) {
+            fila.style.display = "";
+        } else {
+            fila.style.display = "none";
+        }
+    });
+}

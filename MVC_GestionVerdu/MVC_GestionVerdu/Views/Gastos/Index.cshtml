@@ -1,5 +1,27 @@
 ﻿@model IEnumerable<MVC_GestionVerdu.Models.Gastos>
 
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <label for="fechaInicio" class="form-label">Desde:</label>
+        <input type="date" id="fechaInicio" class="form-control">
+    </div>
+    <div class="col-md-6">
+        <label for="fechaFin" class="form-label">Hasta:</label>
+        <input type="date" id="fechaFin" class="form-control">
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+        <button class="btn btn-primary w-100" onclick="filtrarGastos()">Filtrar</button>
+    </div>
+</div>
+
+<div class="alert alert-info">
+    <strong>Total de Gastos: </strong> <span id="totalGastos">$0.00</span>
+</div>
+
+
+
+
 <div class="container mt-4">
     <div class="card shadow">
         <div class="card-header bg-dark text-white">
@@ -19,10 +41,10 @@
                     @foreach (var gasto in Model)
 
                     {
-                        <tr>
-                            <td>@gasto.Fecha.ToString("dd/MM/yyyy")</td>
+                        <tr class="gasto-row">
+                            <td class="fecha">@gasto.Fecha.ToString("dd/MM/yyyy")</td>
                             <td>@gasto.Concepto</td>
-                            <td>@gasto.Monto.ToString("C")</td>
+                            <td class="monto">@gasto.Monto.ToString("C")</td>
                             <td>
                                 <a asp-action="Editar" asp-route-id="@gasto.IdGasto" class="btn btn-sm btn-warning">Editar</a>
                                 <a href="javascript:void(0);" class="btn btn-sm btn-danger" onclick="confirmarEliminacion(@gasto.IdGasto,'/Gastos/Eliminar')">Eliminar</a>

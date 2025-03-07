@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var usuarioId = Context.Session != null ? Context.Session.GetString("UsuarioId") : null;
+}
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -25,6 +30,22 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+
+                        @if (!string.IsNullOrEmpty(usuarioId))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Producto" asp-action="Index">Producto</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="DetallesVenta" asp-action="Index">Ingresos</a>
+                            </li>
+
+                            <!-- Ver Gastos -->
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Gastos" asp-action="Index">Gastos</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
@@ -45,6 +66,10 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/FiltroIngresos.js" asp-append-version="true"></script>
+    <script src="~/js/FiltroGastos.js" asp-append-version="true"></script>
+
+
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)

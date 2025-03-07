@@ -10,12 +10,16 @@ namespace MVC_GestionVerdu.Controllers
 
         private readonly IProductoService _productoService;
         private readonly ICategoriaService _categoriaService;
+        private readonly IVentaService _ventaService;
+        private readonly IGastoService _gastoService;
 
-        public DashBoardController(IProductoService productoService, ICategoriaService categoriaService)
+        public DashBoardController(IProductoService productoService, ICategoriaService categoriaService, IVentaService ventaService, IGastoService gastoService)
         {
             
             _productoService = productoService;
             _categoriaService= categoriaService;
+            _ventaService = ventaService;
+            _gastoService = gastoService;
         }
 
 
@@ -23,9 +27,32 @@ namespace MVC_GestionVerdu.Controllers
         public async Task<IActionResult> Index()
         {
 
+            var fechaActual = DateTime.Today;
+
             int usuarioId = int.Parse(HttpContext.Session.GetString("UsuarioId"));
 
             var productos= await _productoService.ListarProductos(usuarioId);
+
+            var ingresoHoy = await _ventaService.GetVentasDelDia(usuarioId, fechaActual);
+
+            var totalIngresosHoy = ingresoHoy.Sum(i => i.Monto);
+
+            var gastosHoy = await _gastoService.GetGastosDelDia(usuarioId, fechaActual);
+           
+            var totalGastosHoy= gastosHoy.Sum(i => i.Monto);
+
+
+
+
+            var categorias = await _categoriaService.GetCategorias();
+
+
+            ViewBag.IngresosHoy = ingresoHoy;
+            ViewBag.TotalIngresosHoy = totalIngresosHoy;
+            ViewBag.GastosHoy = gastosHoy;
+            ViewBag.totalGastosHoy = totalGastosHoy;
+            ViewBag.Categorias = categorias;
+
 
             TempData["Mensaje"] = "Producto agregado correctamente.";
 
@@ -52,8 +79,9 @@ namespace MVC_GestionVerdu.Controllers
 
         }
 
-        [HttpPost]
 
+
+        [HttpPost]
 
         public async Task<IActionResult> Editar(Producto producto) {
 

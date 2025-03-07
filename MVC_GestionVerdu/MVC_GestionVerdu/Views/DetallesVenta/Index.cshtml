@@ -1,5 +1,35 @@
 ﻿@model IEnumerable<MVC_GestionVerdu.Models.DetallesVenta>
 
+
+<div class="row mb-3">
+    <div class="col-md-4">
+        <label for="filtroMetodoPago">Método de Pago:</label>
+        <select id="filtroMetodoPago" class="form-control">
+            <option value="">Todos</option>
+            <option value="Efectivo">Efectivo</option>
+            <option value="Tarjeta">Tarjeta</option>
+            <option value="Transferencia">Transferencia</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label for="fechaInicio">Desde:</label>
+        <input type="date" id="fechaInicio" class="form-control">
+    </div>
+    <div class="col-md-3">
+        <label for="fechaFin">Hasta:</label>
+        <input type="date" id="fechaFin" class="form-control">
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+        <button class="btn btn-primary w-100" onclick="filtrarIngresos()">Filtrar</button>
+    </div>
+    <div class="alert alert-info">
+        <strong>Total de Ingresos: </strong> <span id="totalIngresos">$0.00</span>
+    </div>
+</div>
+
+
+
+
 <div class="container mt-4">
     <div class="card shadow">
         <div class="card-header bg-dark text-white">
@@ -20,11 +50,11 @@
                     @foreach (var ingreso in Model)
 
                     {
-                        <tr>
-                            <td>@ingreso.Fecha.ToString("dd/MM/yyyy")</td>
-                            <td>@ingreso.MetodoPago.Descripcion</td>
+                        <tr class="producto-row">
+                            <td class="fecha">@ingreso.Fecha.ToString("dd/MM/yyyy")</td>
+                            <td class="metodo-pago">@ingreso.MetodoPago.Descripcion</td>
                             <td>@ingreso.Concepto</td>
-                            <td>@ingreso.Monto.ToString("C")</td>
+                            <td class="monto">@ingreso.Monto.ToString("C")</td>
                             <td>
                                 <a asp-action="Editar" asp-route-id="@ingreso.IdDetalleVenta" class="btn btn-sm btn-warning">Editar</a>
                                 <a href="javascript:void(0);" class="btn btn-sm btn-danger" onclick="confirmarEliminacion(@ingreso.IdDetalleVenta,'/DetallesVenta/Eliminar')">Eliminar</a>

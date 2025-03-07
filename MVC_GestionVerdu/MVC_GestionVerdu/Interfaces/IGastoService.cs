@@ -7,6 +7,7 @@ namespace MVC_GestionVerdu.Interfaces
     {
 
         Task<IEnumerable<Gastos>> GetGastos(int idUsuario);
+        Task<IEnumerable<Gastos>> GetGastosDelDia(int usuarioId, DateTime fechaActual);
         Task<Gastos> GetGastoById(int id);
         Task AgregarGasto( Gastos gasto);
         Task EditarGasto( Gastos gasto);

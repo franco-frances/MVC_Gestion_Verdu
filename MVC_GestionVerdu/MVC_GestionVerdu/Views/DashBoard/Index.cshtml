@@ -8,56 +8,7 @@
 
 <div class="container-fluid">
     <div class="row">
-        <!-- Sidebar -->
-        <nav class="col-md-3 col-lg-2 d-md-block bg-dark sidebar vh-100">
-            <div class="position-sticky pt-3">
-                <ul class="nav flex-column text-white">
-                    <li class="nav-item">
-                        <a class="nav-link active text-white" href="#">
-                            <i class="bi bi-speedometer2"></i> Dashboard
-                        </a>
-                    </li>
-                    <!-- Productos desplegable -->
-                    <li class="nav-item">
-                        <a class="nav-link text-white" data-bs-toggle="collapse" href="#productosCollapse" role="button" aria-expanded="false" aria-controls="productosCollapse">
-                            <i class="bi bi-box-seam"></i> Productos
-                        </a>
-                        <div class="collapse" id="productosCollapse">
-                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small ps-3">
-                                
-                                <li><a class="nav-link text-white" href="@Url.Action("Index", "Producto")">Agregar Producto</a></li>
-
-                            </ul>
-                        </div>
-                    </li>
-                    <!-- Ingresos desplegable -->
-                    <li class="nav-item">
-                        <a class="nav-link text-white" data-bs-toggle="collapse" href="#ingresosCollapse" role="button" aria-expanded="false" aria-controls="ingresosCollapse">
-                            <i class="bi bi-cash-stack"></i> Ingresos
-                        </a>
-                        <div class="collapse" id="ingresosCollapse">
-                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small ps-3">
-                                <li><a class="nav-link text-white" href="@Url.Action("Index", "DetallesVenta")">Ver Ingresos</a></li>
-                                <li><a class="nav-link text-white" href="@Url.Action("AgregarVenta", "DetallesVenta")">Agregar Ingreso</a></li>
-                            </ul>
-                        </div>
-                    </li>
-                    <!-- Gastos desplegable -->
-                    <li class="nav-item">
-                        <a class="nav-link text-white" data-bs-toggle="collapse" href="#gastosCollapse" role="button" aria-expanded="false" aria-controls="gastosCollapse">
-                            <i class="bi bi-receipt"></i> Gastos
-                        </a>
-                        <div class="collapse" id="gastosCollapse">
-                            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small ps-3">
-                                <li><a class="nav-link text-white" href="@Url.Action("Index", "Gastos")">Ver Gastos</a></li>
-                                <li><a class="nav-link text-white" href="@Url.Action("AgregarGasto", "Gastos")">Agregar Gasto</a></li>
-                            </ul>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-
+       
         <!-- Contenido Principal -->
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
             <h1 class="mt-4">Dashboard</h1>
@@ -90,30 +41,49 @@
                 </div>
             </div>
 
+
+            <!-- Buscador y Filtro -->
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <input type="text" id="buscador" class="form-control" placeholder="Buscar producto..." onkeyup="filtrarProductos()">
+                </div>
+                <div class="col-md-6">
+                    <select id="filtroCategoria" class="form-select" onchange="filtrarProductos()">
+                        <option value="">Todas las categorías</option>
+                        @foreach (var categoria in ViewBag.Categorias)
+                        {
+                            <option value="@categoria.IdCategoria">@categoria.Descripcion</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
            
 
 
+            
             <!-- Tabla de Productos -->
             <div class="card shadow mb-4">
                 <div class="card-header bg-dark text-white">
                     <h5>Lista de Productos</h5>
                 </div>
                 <div class="card-body">
-                    <table class="table table-striped">
+                    <table class="table table-striped" id="tablaProductos">
                         <thead>
                             <tr>
                                 <th>Nombre</th>
                                 <th>Precio</th>
+                                <th>Categoría</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var producto in Model)
                             {
-                                <tr>
-                                    <td>@producto.Descripcion</td>
-                                    <td>$@producto.PrecioFinal</td> <!-- O usa @producto.PrecioCosto si lo prefieres -->
-                                    
+                                <tr class="producto-row" data-categoria="@producto.CategoriaId">
+                                    <td class="nombre">@producto.Descripcion</td>
+                                    <td>$@producto.PrecioFinal</td>
+                                    <td>@producto.Categoria.Descripcion</td> <!-- Si el modelo tiene la relación con Categoría -->
                                     <td>
                                         <a asp-action="Editar" asp-route-id="@producto.IdProductos" class="btn btn-sm btn-warning">Editar</a>
                                         <a href="javascript:void(0);" class="btn btn-sm btn-danger"
@@ -127,64 +97,85 @@
             </div>
 
             <!-- Tabla de Ingresos -->
-          @*   <div class="card shadow mb-4">
-                <div class="card-header bg-dark text-white">
-                    <h5>Ingresos</h5>
+            <div class="card shadow mb-4">
+                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                    <h5>Ingresos de Hoy</h5>
+                    <!-- Botón de desplegar/ocultar -->
+                    <button class="btn btn-sm btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#ingresosHoy" aria-expanded="false" aria-controls="ingresosHoy">
+                        <i class="bi bi-chevron-down"></i>
+                    </button>
                 </div>
-                <div class="card-body">
+                <div class="card-body collapse" id="ingresosHoy">
+                    <!-- Estilo para la tabla de ingresos -->
                     <table class="table table-striped">
                         <thead>
                             <tr>
                                 <th>Fecha</th>
-                                <th>Cliente</th>
+                                <th>Concepto</th>
                                 <th>Monto</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>2025-02-20</td>
-                                <td>Juan Pérez</td>
-                                <td>$150</td>
-                            </tr>
-                            <tr>
-                                <td>2025-02-21</td>
-                                <td>Maria López</td>
-                                <td>$200</td>
-                            </tr>
+                            @foreach (var ingreso in ViewBag.IngresosHoy)
+                            {
+                                <tr>
+                                    <td>@ingreso.Fecha.ToString("yyyy-MM-dd")</td>
+                                    <td>@ingreso.Concepto</td>
+                                    <td>@ingreso.Monto.ToString("C")</td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
+
+                    <!-- Total de los Ingresos de Hoy -->
+                    <div class="alert alert-success">
+                        <strong>Total de Ingresos de Hoy: </strong>
+                        <span id="totalIngresosHoy">
+                            @ViewBag.TotalIngresosHoy.ToString("C")
+                        </span>
+                    </div>
                 </div>
-            </div> *@
+            </div>
 
             <!-- Tabla de Gastos -->
-           @*  <div class="card shadow mb-4">
-                <div class="card-header bg-dark text-white">
-                    <h5>Gastos</h5>
+            <div class="card shadow mb-4">
+                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                    <h5>Gastos de Hoy</h5>
+                    <!-- Botón de desplegar/ocultar -->
+                    <button class="btn btn-sm btn-light" type="button" data-bs-toggle="collapse" data-bs-target="#gastosHoy" aria-expanded="false" aria-controls="gastosHoy">
+                        <i class="bi bi-chevron-down"></i>
+                    </button>
                 </div>
-                <div class="card-body">
+                <div class="card-body collapse" id="gastosHoy">
                     <table class="table table-striped">
                         <thead>
                             <tr>
                                 <th>Fecha</th>
-                                <th>Descripción</th>
+                                <th>Concepto</th>
                                 <th>Monto</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>2025-02-20</td>
-                                <td>Compra de insumos</td>
-                                <td>$500</td>
-                            </tr>
-                            <tr>
-                                <td>2025-02-21</td>
-                                <td>Pago de alquiler</td>
-                                <td>$700</td>
-                            </tr>
+                            @foreach (var gasto in ViewBag.GastosHoy)
+                            {
+                                <tr>
+                                    <td>@gasto.Fecha.ToString("yyyy-MM-dd")</td>
+                                    <td>@gasto.Concepto</td>
+                                    <td>@gasto.Monto.ToString("C")</td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
+
+                    <!-- Estilo para Total de Gastos de Hoy -->
+                    <div class="alert alert-danger">
+                        <strong>Total de Gastos de Hoy: </strong>
+                        <span id="totalGastosHoy">
+                            @ViewBag.TotalGastosHoy.ToString("C")
+                        </span>
+                    </div>
                 </div>
-            </div> *@
+            </div>
 
         </main>
     </div>

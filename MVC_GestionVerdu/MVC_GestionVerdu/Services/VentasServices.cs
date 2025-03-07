@@ -43,6 +43,18 @@ namespace MVC_GestionVerdu.Services
         }
 
 
+        public async Task<IEnumerable<DetallesVenta>> GetVentasDelDia(int usuarioId, DateTime fechaActual)
+        {
+            var ventas = await _context.DetallesVentas
+                                        .Where(v => v.UsuarioId == usuarioId && v.Fecha == fechaActual)
+                                        .ToListAsync();
+            return ventas;
+        }
+
+
+
+
+
         [HttpPost]
         [Route("AgregarVenta")]
 
