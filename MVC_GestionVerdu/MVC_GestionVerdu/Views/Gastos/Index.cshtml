@@ -1,12 +1,14 @@
 ﻿@model IEnumerable<MVC_GestionVerdu.Models.Gastos>
 
+<h1>Gastos</h1>
+
 
 <div class="row mb-3">
-    <div class="col-md-6">
+    <div class="col-md-5">
         <label for="fechaInicio" class="form-label">Desde:</label>
         <input type="date" id="fechaInicio" class="form-control">
     </div>
-    <div class="col-md-6">
+    <div class="col-md-5">
         <label for="fechaFin" class="form-label">Hasta:</label>
         <input type="date" id="fechaFin" class="form-control">
     </div>
@@ -15,11 +17,13 @@
     </div>
 </div>
 
-<div class="alert alert-info">
+<div class="alert alert-info mt-3">
     <strong>Total de Gastos: </strong> <span id="totalGastos">$0.00</span>
 </div>
 
-
+<div class="mt-3 text-center">
+    <a asp-controller="Gastos" asp-action="AgregarGasto" class="btn btn-danger ">Agregar Gastos</a>
+</div>
 
 
 <div class="container mt-4">

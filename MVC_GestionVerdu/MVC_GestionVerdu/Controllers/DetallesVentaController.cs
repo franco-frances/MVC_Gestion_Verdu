@@ -26,7 +26,9 @@ namespace MVC_GestionVerdu.Controllers
             
             var ventas = await _ventaService.GetVentas(usuarioId);
 
-           
+            
+
+
             return View(ventas);
         }
 
@@ -53,9 +55,14 @@ namespace MVC_GestionVerdu.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> AgregarVenta(DetallesVenta venta)
+        public async Task<IActionResult> AgregarVenta(DetallesVenta venta, string origen)
         {
 
+            if (origen == "ingresosRapidos") {
+
+                venta.Concepto = "Varios";
+            
+            }
 
             venta.UsuarioId = int.Parse(HttpContext.Session.GetString("UsuarioId"));
 
@@ -64,9 +71,19 @@ namespace MVC_GestionVerdu.Controllers
 
             await _ventaService.AgregarVenta(venta);
 
+            if (origen == "ingresosRapidos")
+            {
+
+                return RedirectToAction("Index","DashBoard");
+
+
+            }
+            
             TempData["MensajeVenta"] = "Venta agregada correctamente.";
 
-            return RedirectToAction("Index");
+
+
+            return RedirectToAction("AgregarVenta","DetallesVenta");
 
 
 

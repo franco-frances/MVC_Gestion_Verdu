@@ -1,10 +1,13 @@
 ﻿@model IEnumerable<MVC_GestionVerdu.Models.DetallesVenta>
 
 
+    <h1>Ingresos</h1>
+
+
 <div class="row mb-3">
-    <div class="col-md-4">
-        <label for="filtroMetodoPago">Método de Pago:</label>
-        <select id="filtroMetodoPago" class="form-control">
+    <div class="col-md-3">
+        <label for="filtroMetodoPago" class="form-label">Método de Pago:</label>
+        <select id="filtroMetodoPago" class="form-select">
             <option value="">Todos</option>
             <option value="Efectivo">Efectivo</option>
             <option value="Tarjeta">Tarjeta</option>
@@ -12,20 +15,26 @@
         </select>
     </div>
     <div class="col-md-3">
-        <label for="fechaInicio">Desde:</label>
+        <label for="fechaInicio" class="form-label">Desde:</label>
         <input type="date" id="fechaInicio" class="form-control">
     </div>
     <div class="col-md-3">
-        <label for="fechaFin">Hasta:</label>
+        <label for="fechaFin" class="form-label">Hasta:</label>
         <input type="date" id="fechaFin" class="form-control">
     </div>
-    <div class="col-md-2 d-flex align-items-end">
+    <div class="col-md-3 d-flex align-items-end">
         <button class="btn btn-primary w-100" onclick="filtrarIngresos()">Filtrar</button>
     </div>
-    <div class="alert alert-info">
-        <strong>Total de Ingresos: </strong> <span id="totalIngresos">$0.00</span>
-    </div>
 </div>
+
+<div class="alert alert-info mt-3">
+    <strong>Total de Ingresos: </strong> <span id="totalIngresos">$0.00</span>
+</div>
+
+<div class="mt-3 text-center">
+    <a asp-controller="DetallesVenta" asp-action="AgregarVenta" class="btn btn-success">Agregar Ingreso</a>
+</div>
+
 
 
 

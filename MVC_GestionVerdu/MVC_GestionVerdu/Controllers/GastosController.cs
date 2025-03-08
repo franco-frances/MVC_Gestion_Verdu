@@ -42,19 +42,27 @@ namespace MVC_GestionVerdu.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> AgregarGasto(Gastos gasto) {
+        public async Task<IActionResult> AgregarGasto(Gastos gasto, string origen) {
+
 
 
             gasto.UsuarioId = int.Parse(HttpContext.Session.GetString("UsuarioId"));
 
 
-
-
             await _gastoService.AgregarGasto(gasto);
+
+            if (origen == "gastosRapidos")
+            {
+
+                return RedirectToAction("Index", "DashBoard");
+
+
+            }
+
 
             TempData["MensajeGasto"] = "Gasto agregado correctamente.";
 
-            return RedirectToAction("Index");
+            return RedirectToAction("AgregarGasto","Gastos");
 
 
 

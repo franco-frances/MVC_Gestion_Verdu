@@ -12,14 +12,16 @@ namespace MVC_GestionVerdu.Controllers
         private readonly ICategoriaService _categoriaService;
         private readonly IVentaService _ventaService;
         private readonly IGastoService _gastoService;
+        private readonly IMetodoPagoService _metodoPagoService;
 
-        public DashBoardController(IProductoService productoService, ICategoriaService categoriaService, IVentaService ventaService, IGastoService gastoService)
+        public DashBoardController(IProductoService productoService, ICategoriaService categoriaService, IVentaService ventaService, IGastoService gastoService, IMetodoPagoService metodoPagoService)
         {
             
             _productoService = productoService;
             _categoriaService= categoriaService;
             _ventaService = ventaService;
             _gastoService = gastoService;
+            _metodoPagoService = metodoPagoService;
         }
 
 
@@ -45,6 +47,7 @@ namespace MVC_GestionVerdu.Controllers
 
 
             var categorias = await _categoriaService.GetCategorias();
+            var metodoPagos = await _metodoPagoService.GetMetodoPagos();
 
 
             ViewBag.IngresosHoy = ingresoHoy;
@@ -52,6 +55,7 @@ namespace MVC_GestionVerdu.Controllers
             ViewBag.GastosHoy = gastosHoy;
             ViewBag.totalGastosHoy = totalGastosHoy;
             ViewBag.Categorias = categorias;
+            ViewBag.MetodoPago = metodoPagos;  
 
 
             TempData["Mensaje"] = "Producto agregado correctamente.";

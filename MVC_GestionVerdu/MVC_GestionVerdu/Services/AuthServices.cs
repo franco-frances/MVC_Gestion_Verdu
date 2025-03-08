@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MVC_GestionVerdu.Interfaces;
 using MVC_GestionVerdu.Models;
@@ -103,6 +104,12 @@ namespace MVC_GestionVerdu.Services
 
 
         }
+
+        
+
+
+
+
 
 
 

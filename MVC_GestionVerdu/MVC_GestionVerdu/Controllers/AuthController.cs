@@ -2,6 +2,8 @@
 using MVC_GestionVerdu.Services;
 using MVC_GestionVerdu.Models;
 using MVC_GestionVerdu.Interfaces;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 
 
 namespace MVC_GestionVerdu.Controllers
@@ -89,6 +91,14 @@ namespace MVC_GestionVerdu.Controllers
                 }
             }
             return View(); 
+        }
+
+
+        
+        public IActionResult Logout()
+        {
+             HttpContext.Session.Clear();
+            return RedirectToAction("Index", "Home");
         }
 
 
