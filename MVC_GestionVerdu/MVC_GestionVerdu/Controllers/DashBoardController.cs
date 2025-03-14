@@ -43,6 +43,8 @@ namespace MVC_GestionVerdu.Controllers
            
             var totalGastosHoy= gastosHoy.Sum(i => i.Monto);
 
+            
+
 
 
 
@@ -55,7 +57,8 @@ namespace MVC_GestionVerdu.Controllers
             ViewBag.GastosHoy = gastosHoy;
             ViewBag.totalGastosHoy = totalGastosHoy;
             ViewBag.Categorias = categorias;
-            ViewBag.MetodoPago = metodoPagos;  
+            ViewBag.MetodoPago = metodoPagos;
+            ViewBag.TotalHoy = totalIngresosHoy - totalGastosHoy;
 
 
             TempData["Mensaje"] = "Producto agregado correctamente.";

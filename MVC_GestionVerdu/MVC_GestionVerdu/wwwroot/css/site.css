@@ -18,5 +18,193 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f7f9fc;
+    color: #333;
+    margin-bottom: 60px;
+}
+
+h1 {
+    font-weight: 700;
+}
+
+p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+
+.navbar-custom {
+    background: linear-gradient(90deg, #0052D4, #4364F7, #6FB1FC);
+    padding: 12px 0;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.navbar-brand-custom {
+    font-size: 1.6rem;
+    font-weight: 400; /* Tipografía más fina */
+    display: flex;
+    align-items: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+    .navbar-brand-custom img {
+        height: 40px;
+        margin-right: 10px;
+    }
+
+.navbar-nav-custom .nav-link {
+    font-size: 1.2rem; /* Tamaño ajustado para mejor proporción */
+    font-weight: 400; /* Reducción del grosor */
+    
+    color: #fff !important;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+    padding: 8px 18px;
+    transition: all 0.3s ease-in-out;
+}
+
+    .navbar-nav-custom .nav-link:hover {
+        color: #FFD700 !important;
+        transform: scale(1.08);
+    }
+
+.btn-logout {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+    font-size: 1.1rem; /* Tamaño ajustado */
+    font-weight: 500; /* Menos grueso */
+    padding: 8px 18px;
+    transition: all 0.3s ease-in-out;
+}
+
+    .btn-logout:hover {
+        background-color: #ff1a1a;
+        transform: scale(1.05);
+    }
+
+.card-custom {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 18px;
+    text-align: center;
+    color: #333;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    min-height: 150px; /* Asegura que todas las cards tengan la misma altura */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+    .card-custom.ingresos {
+        border-top: 4px solid #28a745;
+    }
+
+    .card-custom.gastos {
+        border-top: 4px solid #dc3545;
+    }
+
+    .card-custom:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+.card-title {
+    font-size: 1.2rem;
+    font-weight: 400; /* Más minimalista */
+    margin-bottom: 5px;
+    color: #666;
+}
+
+.card-text {
+    font-size: 1.8rem;
+    font-weight: 500;
+    color: #222;
+}
+
+
+/* Botones */
+.btn-lg {
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    border-radius: 25px;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    transition: all 0.3s ease;
+}
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+    }
+
+.btn-outline-secondary {
+    color: #6c757d;
+    border-color: #6c757d;
+    transition: all 0.3s ease;
+}
+
+    .btn-outline-secondary:hover {
+        color: #ffffff;
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+
+/* Cards */
+.card {
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+    .card-body i {
+        font-size: 3rem;
+    }
+
+    .card-body h5 {
+        font-weight: 600;
+        font-size: 1.3rem;
+        color: #333;
+    }
+
+/* Títulos y texto */
+.display-4 {
+    font-size: 3.5rem;
+    color: #004085;
+}
+
+.text-muted {
+    color: #6c757d !important;
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* Sombra de botones */
+.shadow-lg {
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Espaciado */
+.mt-5 {
+    margin-top: 3rem;
+}
+
+.mb-4 {
+    margin-bottom: 1.5rem;
+}
+
+.mt-3 {
+    margin-top: 1rem;
 }

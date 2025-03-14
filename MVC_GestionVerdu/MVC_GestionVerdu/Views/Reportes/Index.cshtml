@@ -1,5 +1,51 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model MVC_GestionVerdu.Models.ReporteViewModel
+
+<h1>Reporte de Ingresos y Gastos</h1>
+
+<form asp-controller="Reportes" asp-action="Index"  method="get">
+    <div class="row">
+        <div class="col-md-3">
+            <label for="fechaInicio" class="form-label">Desde:</label>
+            <input type="date" name="fechaInicio" class="form-control" 
+                   value="@(Model?.FechaInicio.ToString("yyyy-MM-dd") ?? "")">
+        </div>
+        <div class="col-md-3">
+            <label for="fechaFin" class="form-label">Hasta:</label>
+            <input type="date" name="fechaFin" class="form-control" 
+                   value="@(Model?.FechaFin.ToString("yyyy-MM-dd") ?? "")">
+        </div>
+        <div class="col-md-3">
+            <label asp-for="Intervalo" class="form-label">Agrupar:</label>
+            <select asp-for="Intervalo" asp-items="@(new SelectList(new List<string> { "diario", "semana", "mes" }, Model.Intervalo))" class="form-control">
+            </select>
+        </div>
+
+        <div class="col-md-3 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+        </div>
+    </div>
+</form>
+
+<!-- Gráfico de Ingresos y Gastos -->
+<canvas id="reporteGrafico" width="300" height="150"></canvas>
+
+<hr />
+
+<div class="text-center">
+    <h1>Balance</h1>
+</div>
+
+<hr />
+
+<!-- Gráfico de Balance -->
+<canvas id="balanceGrafico" width="300" height="150"></canvas>
+
+<script>
+    window.chartData = {
+        fechas: @Html.Raw(Json.Serialize(Model?.Fechas ?? new List<string>())),
+        ingresos: @Html.Raw(Json.Serialize(Model?.Ingresos ?? new List<decimal>())),
+        gastos: @Html.Raw(Json.Serialize(Model?.Gastos ?? new List<decimal>())),
+        balance: @Html.Raw(Json.Serialize(Model?.Balance ?? new List<decimal>()))
+        };
+</script>
+<script src="~/js/Charts.js" asp-append-version="true"></script>
