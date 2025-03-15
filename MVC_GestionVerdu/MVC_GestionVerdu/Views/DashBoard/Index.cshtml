@@ -19,7 +19,7 @@
                     <div class="card-custom">
                         <div class="card-body">
                             <h3 class="card-title">Total Hoy</h3>
-                            <p class="card-text">@ViewBag.TotalHoy.toString("C")</p>
+                            <p class="card-text">@ViewBag.TotalHoy.ToString("C")</p>
                         </div>
                     </div>
                 </div>
@@ -98,7 +98,7 @@
                         <i class="bi bi-chevron-down"></i>
                     </button>
                 </div>
-                <div class="card-body collapse" id="ingresosHoy">
+                <div class="collapse" id="ingresosHoy">
                     <table class="table table-hover align-middle text-center">
                         <thead class="table-secondary">
                             <tr>
@@ -118,11 +118,13 @@
                             }
                         </tbody>
                     </table>
-                    <div class="alert alert-success text-center mt-3">
-                        <strong>Total de Ingresos de Hoy: </strong>
-                        <span id="totalIngresosHoy">@ViewBag.TotalIngresosHoy.ToString("C")</span>
+                    <div class="alert alert-success text-center mt-3 shadow-sm rounded-3 p-2" style="max-width: 300px; margin: auto;">
+                        <h6 class="fw-bold mb-1">
+                            <i class="bi bi-cash-stack me-1"></i> Total de Ingresos
+                        </h6>
+                        <span id="totalIngresosHoy" class="fs-6 fw-semibold">@ViewBag.TotalIngresosHoy.ToString("C")</span>
                     </div>
-                    <form asp-controller="DetallesVenta" asp-action="AgregarVenta" method="post" class="row g-3 align-items-center justify-content-center mt-3">
+                    <form asp-controller="DetallesVenta" asp-action="AgregarVenta" method="post" class="row g-3 align-items-center justify-content-center mt-3 mb-2">
                         <div class="col-md-3">
                             <select name="MetodoPagoId" class="form-select rounded-pill" required>
                                 <option value="">Seleccionar</option>
@@ -152,7 +154,7 @@
                         <i class="bi bi-chevron-down"></i>
                     </button>
                 </div>
-                <div class="card-body collapse" id="gastosHoy">
+                <div class="collapse" id="gastosHoy">
                     <table class="table table-hover align-middle text-center">
                         <thead class="table-secondary">
                             <tr>
@@ -172,11 +174,14 @@
                             }
                         </tbody>
                     </table>
-                    <div class="alert alert-danger text-center mt-3">
-                        <strong>Total de Gastos de Hoy: </strong>
-                        <span id="totalGastosHoy">@ViewBag.TotalGastosHoy.ToString("C")</span>
+                    <div class="alert alert-danger text-center mt-3 shadow-sm rounded-3 p-2" style="max-width: 300px; margin: auto;">
+                        <h6 class="fw-bold mb-1">
+                            <i class="bi bi-cart-dash me-1"></i> Total de Gastos
+                        </h6>
+                        <span id="totalGastosHoy" class="fs-6 fw-semibold">@ViewBag.TotalGastosHoy.ToString("C")</span>
                     </div>
-                    <form asp-controller="Gastos" asp-action="AgregarGasto" method="post" class="row g-3 align-items-center justify-content-center mt-3">
+
+                    <form asp-controller="Gastos" asp-action="AgregarGasto" method="post" class="row g-3 align-items-center justify-content-center mt-3 mb-2">
                         <div class="col-md-4">
                             <input type="text" name="Concepto" class="form-control rounded-pill" placeholder="Concepto" required>
                         </div>
@@ -197,21 +202,4 @@
 
 
 
-<!-- Estilos personalizados -->
-<style>
-    body {
-        background-color: #f8f9fa;
-    }
 
-    .card-header h5 {
-        margin-bottom: 0;
-    }
-
-    .table th, .table td {
-        vertical-align: middle;
-    }
-
-    .alert {
-        font-size: 1.1rem;
-    }
-</style>
