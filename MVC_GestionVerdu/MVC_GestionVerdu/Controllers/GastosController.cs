@@ -42,30 +42,12 @@ namespace MVC_GestionVerdu.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> AgregarGasto(Gastos gasto, string origen) {
-
-
-
+        public async Task<IActionResult> AgregarGasto(Gastos gasto)
+        {
             gasto.UsuarioId = int.Parse(HttpContext.Session.GetString("UsuarioId"));
-
-
             await _gastoService.AgregarGasto(gasto);
 
-            if (origen == "gastosRapidos")
-            {
-
-                return RedirectToAction("Index", "DashBoard");
-
-
-            }
-
-
-            TempData["MensajeGasto"] = "Gasto agregado correctamente.";
-
-            return RedirectToAction("AgregarGasto","Gastos");
-
-
-
+            return Json(new { success = true, message = "Gasto agregado correctamente.", gasto });
         }
 
 
@@ -82,39 +64,45 @@ namespace MVC_GestionVerdu.Controllers
 
 
         [HttpPost]
-
         public async Task<IActionResult> Editar(Gastos gasto)
         {
-
-
             var gastoEditado = await _gastoService.GetGastoById(gasto.IdGasto);
 
+            if (gastoEditado == null)
+            {
+                return Json(new { success = false, message = "El gasto no existe." });
+            }
 
-            gastoEditado.Concepto = gasto.Concepto;
-            gastoEditado.Fecha = gasto.Fecha;
-            gastoEditado.Monto = gasto.Monto;
+            try
+            {
+                gastoEditado.Concepto = gasto.Concepto;
+                gastoEditado.Fecha = gasto.Fecha;
+                gastoEditado.Monto = gasto.Monto;
+
+                await _gastoService.EditarGasto(gastoEditado);
+
+                return Json(new { success = true, message = "Gasto editado correctamente." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Error al editar el gasto: " + ex.Message });
+            }
+        }
 
 
-
-           
-
-
-            await _gastoService.EditarGasto(gastoEditado);
+        [HttpPost]
 
 
+        public async Task<IActionResult> Eliminar(int id)
+        {
 
-            TempData["MensajeGastoEditado"] = "Gasto editado correctamente.";
+            await _gastoService.EliminarGasto(id);
 
-
-            return View(gasto);
-
-
-
-
-
+            return RedirectToAction("Index");
 
 
         }
+
 
 
 

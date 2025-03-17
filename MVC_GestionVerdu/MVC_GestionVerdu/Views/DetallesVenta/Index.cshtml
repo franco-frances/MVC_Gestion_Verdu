@@ -60,7 +60,7 @@
 
                     {
                         <tr class="producto-row">
-                            <td class="fecha">@ingreso.Fecha.ToString("dd/MM/yyyy")</td>
+                            <td class="fecha">@ingreso.Fecha.ToString("yyyy-MM-dd")</td>
                             <td class="metodo-pago">@ingreso.MetodoPago.Descripcion</td>
                             <td>@ingreso.Concepto</td>
                             <td class="monto">@ingreso.Monto.ToString("C")</td>
@@ -75,3 +75,9 @@
         </div>
     </div>
 </div>
+
+
+@section Scripts {
+    <script src="~/js/FiltroIngresos.js" asp-append-version="true"></script>
+   
+}
