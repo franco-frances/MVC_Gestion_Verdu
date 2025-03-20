@@ -1,0 +1,53 @@
+﻿@model IEnumerable<MVC_GestionVerdu.Models.DetallesVenta>
+
+<!-- Modal para Agregar/Editar Ingresos -->
+<div class="modal fade" id="modalIngreso" tabindex="-1" aria-labelledby="modalIngresoLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="modalIngresoLabel">Registrar Ingreso</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formIngreso" method="post">
+                    <!-- Campo oculto para el ID (usado al editar) -->
+                    <input type="hidden" id="IdDetalleVenta" name="IdDetalleVenta" />
+
+                    <div class="mb-3">
+                        <label for="Fecha" class="form-label fw-bold">Fecha:</label>
+                        <input type="date" class="form-control" id="Fecha" name="Fecha" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="MetodoPagoId" class="form-label fw-bold">Método de Pago:</label>
+                        <select class="form-select" id="MetodoPagoId" name="MetodoPagoId" required>
+                            <option value="">Seleccionar</option>
+                            @foreach (var metodo in ViewBag.MetodoPago)
+                            {
+                                <option value="@metodo.IdMetodoPago">@metodo.Descripcion</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Concepto" class="form-label fw-bold">Concepto:</label>
+                        <input type="text" class="form-control" id="Concepto" name="Concepto" placeholder="Descripción del ingreso" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Monto" class="form-label fw-bold">Monto:</label>
+                        <input type="number" class="form-control" id="Monto" name="Monto" step="0.01" placeholder="Ingrese el monto" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" form="formIngreso" class="btn btn-success">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<input type="hidden" id="tempMensaje" value="@TempData["MensajeIngresos"]" />
+<input type="hidden" id="tempTipoMensaje" value="@TempData["TipoMensajeIngresos"]" />

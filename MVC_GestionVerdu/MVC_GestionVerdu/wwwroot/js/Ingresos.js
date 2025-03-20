@@ -66,7 +66,7 @@ function filtrarIngresos() {
     let metodoPagoSeleccionado = document.getElementById("filtroMetodoPago").value.toLowerCase();
     let fechaInicio = document.getElementById("fechaInicio").value;
     let fechaFin = document.getElementById("fechaFin").value;
-    let filas = document.querySelectorAll(".producto-row");
+    let filas = document.querySelectorAll(".ingreso-row");
     let totalIngresos = 0;
 
     filas.forEach(fila => {
