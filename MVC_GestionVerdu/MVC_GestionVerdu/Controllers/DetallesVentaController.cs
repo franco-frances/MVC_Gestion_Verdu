@@ -73,6 +73,9 @@ namespace MVC_GestionVerdu.Controllers
 
             await _ventaService.AgregarVenta(venta);
 
+            TempData["MensajeIngresos"] = "Ingreso agregado correctamente.";
+            TempData["TipoMensajeIngresos"] = "success"; // Para SweetAlert
+
             if (origen == "ingresosRapidos")
             {
 
@@ -80,9 +83,6 @@ namespace MVC_GestionVerdu.Controllers
 
 
             }
-
-            TempData["MensajeIngresos"] = "Ingreso agregado correctamente.";
-            TempData["TipoMensajeIngresos"] = "success"; // Para SweetAlert
 
 
 

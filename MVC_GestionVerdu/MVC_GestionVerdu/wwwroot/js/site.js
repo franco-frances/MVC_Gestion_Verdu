@@ -91,3 +91,21 @@ function filtrarProductos() {
         }
     });
 }
+
+
+$(function () {
+    var mensaje = $("#tempMensaje").val();
+    var tipoMensaje = $("#tempTipoMensaje").val();
+
+    if (mensaje && mensaje.trim() !== "") {
+        Swal.fire({
+            icon: tipoMensaje || "info", // Usa "info" por defecto
+            title: tipoMensaje === "error" ? "¡Error!" : "¡Éxito!",
+            text: mensaje,
+            timer: 2000,
+            showConfirmButton: false
+        });
+    }
+});
+
+

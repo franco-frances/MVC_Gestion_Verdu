@@ -41,13 +41,32 @@ namespace MVC_GestionVerdu.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AgregarGasto(Gastos gasto)
+        public async Task<IActionResult> AgregarGasto(Gastos gasto, string origen)
         {
-            gasto.UsuarioId = int.Parse(HttpContext.Session.GetString("UsuarioId"));
-            await _gastoService.AgregarGasto(gasto);
 
+            if (origen=="gastosRapidos")
+            {
+                gasto.Concepto = "varios";
+                
+                
+            }
+            gasto.UsuarioId = int.Parse(HttpContext.Session.GetString("UsuarioId"));
+
+
+            await _gastoService.AgregarGasto(gasto);
+            
             TempData["MensajeGastos"] = "Gasto agregado correctamente.";
             TempData["TipoMensajeGastos"] = "success"; // Para SweetAlert
+
+            if (origen == "gastosRapidos")
+            {
+                
+                return RedirectToAction("Index","DashBoard");
+
+
+            }
+
+
 
             return RedirectToAction("Index");
         }

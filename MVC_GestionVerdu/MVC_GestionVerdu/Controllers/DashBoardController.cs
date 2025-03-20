@@ -68,6 +68,32 @@ namespace MVC_GestionVerdu.Controllers
         }
 
 
+        [HttpPost]
+
+        public async Task<IActionResult> AgregarProducto(Producto producto)
+        {
+
+            producto.UsuarioId = int.Parse(HttpContext.Session.GetString("UsuarioId"));
+
+
+
+
+            await _productoService.AgregarProducto(producto);
+
+            TempData["MensajeProductos"] = "Producto editado correctamente.";
+            TempData["TipoMensajeProductos"] = "success";
+
+
+
+            return RedirectToAction("Index");
+
+
+
+        }
+
+
+
+
 
         public async Task<IActionResult> Editar(int id)
         {
@@ -95,35 +121,56 @@ namespace MVC_GestionVerdu.Controllers
 
             var produEditado = await _productoService.GetProducto(producto.IdProductos);
 
-            produEditado.Descripcion= producto.Descripcion;
-            produEditado.CategoriaId= producto.CategoriaId;
-            produEditado.PrecioCajon= producto.PrecioCajon;
-            produEditado.PesoCajon= producto.PesoCajon;
-            produEditado.MargenGanancia= producto.MargenGanancia;
-            produEditado.PrecioCosto= producto.PrecioCosto;
-            produEditado.PrecioFinal= producto.PrecioFinal;
+
+            if (produEditado == null)
+            {
+                TempData["MensajeProductos"] = "El Producto no existe.";
+                TempData["TipoMensajeProductos"] = "error";
+                return RedirectToAction("Index");
+            }
+
+            try
+            {
+
+                produEditado.Descripcion= producto.Descripcion;
+                produEditado.CategoriaId= producto.CategoriaId;
+                produEditado.PrecioCajon= producto.PrecioCajon;
+                produEditado.PesoCajon= producto.PesoCajon;
+                produEditado.MargenGanancia= producto.MargenGanancia;
+                produEditado.PrecioCosto= producto.PrecioCosto;
+                produEditado.PrecioFinal= producto.PrecioFinal;
             
-
-
-            //pasa las categorias para que sean cargadas en select
-            ViewBag.Categorias = await _categoriaService.GetCategorias();
-
-
-
-            await _productoService.EditarProducto(produEditado);
+            
+                //pasa las categorias para que sean cargadas en select
+                ViewBag.Categorias = await _categoriaService.GetCategorias();
 
 
 
-            TempData["MensajeEditar"] = "Producto editado correctamente.";
+                await _productoService.EditarProducto(produEditado);
 
-            return View(producto);
+
+                TempData["MensajeProductos"] = "Producto editado correctamente.";
+                TempData["TipoMensajeProductos"] = "success";
+
+            }
+            catch (Exception)
+            {
+                TempData["MensajeProductos"] = "El Producto no existe.";
+                TempData["MensajeProductos"] = "error";
+
+                return RedirectToAction("Index");
+
+            }
+
+
+            return RedirectToAction("Index");
 
 
         }
 
 
         [HttpPost]
-public async Task<IActionResult> Eliminar(int id){
+        public async Task<IActionResult> Eliminar(int id){
                     
             var producto = await _productoService.GetProducto(id);
             if (producto == null)
