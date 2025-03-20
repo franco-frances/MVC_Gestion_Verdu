@@ -40,14 +40,16 @@ namespace MVC_GestionVerdu.Controllers
 
         }
 
-
         [HttpPost]
         public async Task<IActionResult> AgregarGasto(Gastos gasto)
         {
             gasto.UsuarioId = int.Parse(HttpContext.Session.GetString("UsuarioId"));
             await _gastoService.AgregarGasto(gasto);
 
-            return Json(new { success = true, message = "Gasto agregado correctamente.", gasto });
+            TempData["MensajeGastos"] = "Gasto agregado correctamente.";
+            TempData["TipoMensajeGastos"] = "success"; // Para SweetAlert
+
+            return RedirectToAction("Index");
         }
 
 
@@ -70,7 +72,9 @@ namespace MVC_GestionVerdu.Controllers
 
             if (gastoEditado == null)
             {
-                return Json(new { success = false, message = "El gasto no existe." });
+                TempData["MensajeGastos"] = "El gasto no existe.";
+                TempData["TipoMensajeGastos"] = "error";
+                return RedirectToAction("Index");
             }
 
             try
@@ -81,26 +85,38 @@ namespace MVC_GestionVerdu.Controllers
 
                 await _gastoService.EditarGasto(gastoEditado);
 
-                return Json(new { success = true, message = "Gasto editado correctamente." });
+                TempData["MensajeGastos"] = "Gasto editado correctamente.";
+                TempData["TipoMensajeGastos"] = "success";
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = "Error al editar el gasto: " + ex.Message });
+                TempData["MensajeGastos"] = "Error al editar el gasto: " + ex.Message;
+                TempData["TipoMensajeGastos"] = "error";
+                return RedirectToAction("Index");
             }
         }
 
 
         [HttpPost]
-
-
         public async Task<IActionResult> Eliminar(int id)
         {
+            var gasto = await _gastoService.GetGastoById(id);
 
-            await _gastoService.EliminarGasto(id);
+            if (gasto == null)
+            {
+                return Json(new { success = false, message = "El gasto no existe." });
+            }
 
-            return RedirectToAction("Index");
-
-
+            try
+            {
+                await _gastoService.EliminarGasto(id);
+                return Json(new { success = true, message = "Gasto eliminado correctamente." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Error al eliminar el gasto: " + ex.Message });
+            }
         }
 
 

@@ -75,17 +75,17 @@
                         <tbody>
                             @foreach (var producto in Model)
                             {
-                                <tr class="producto-row" data-categoria="@producto.CategoriaId">
-                                    <td class="nombre">@producto.Descripcion</td>
-                                    <td>$@producto.PrecioFinal</td>
-                                    <td>@producto.Categoria.Descripcion</td>
-                                    <td>
-                                        <a asp-action="Editar" asp-route-id="@producto.IdProductos" class="btn btn-sm btn-warning rounded-pill">Editar</a>
-                                        <a href="javascript:void(0);" class="btn btn-sm btn-danger rounded-pill" onclick="confirmarEliminacion(@producto.IdProductos,'/DashBoard/Eliminar')">Eliminar</a>
-                                    </td>
-                                </tr>
+            <tr id="fila-@producto.IdProductos" class="producto-row" data-categoria="@producto.CategoriaId">
+                <td class="nombre">@producto.Descripcion</td>
+                <td>$@producto.PrecioFinal</td>
+                <td>@producto.Categoria.Descripcion</td>
+                <td>
+                    <a asp-action="Editar" asp-route-id="@producto.IdProductos" class="btn btn-sm btn-warning rounded-pill">Editar</a>
+                    <a href="javascript:void(0);" class="btn btn-sm btn-danger rounded-pill" onclick="confirmarEliminacion(@producto.IdProductos, '/DashBoard/Eliminar')">Eliminar</a>
+                </td>
+            </tr>
                             }
-                        </tbody>
+</tbody>
                     </table>
                 </div>
             </div>

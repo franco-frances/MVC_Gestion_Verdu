@@ -32,11 +32,9 @@
 </div>
 
 <div class="mt-3 text-center">
-    <a asp-controller="DetallesVenta" asp-action="AgregarVenta" class="btn btn-success">Agregar Ingreso</a>
+    
+    <button id="btnAgregarIngreso" class="btn btn-success">Agregar Ingreso</button>
 </div>
-
-
-
 
 
 <div class="container mt-4">
@@ -59,14 +57,21 @@
                     @foreach (var ingreso in Model)
 
                     {
-                        <tr class="producto-row">
+                        <tr id="fila-@ingreso.IdDetalleVenta" class="ingreso-row">
                             <td class="fecha">@ingreso.Fecha.ToString("yyyy-MM-dd")</td>
                             <td class="metodo-pago">@ingreso.MetodoPago.Descripcion</td>
                             <td>@ingreso.Concepto</td>
                             <td class="monto">@ingreso.Monto.ToString("C")</td>
                             <td>
-                                <a asp-action="Editar" asp-route-id="@ingreso.IdDetalleVenta" class="btn btn-sm btn-warning">Editar</a>
-                                <a href="javascript:void(0);" class="btn btn-sm btn-danger" onclick="confirmarEliminacion(@ingreso.IdDetalleVenta,'/DetallesVenta/Eliminar')">Eliminar</a>
+                                <button class="btn btn-sm btn-warning btnEditarIngreso"
+                                        data-id="@ingreso.IdDetalleVenta"
+                                        data-fecha="@ingreso.Fecha.ToString("yyyy-MM-dd")"
+                                        data-metodopagoid="@ingreso.MetodoPago.IdMetodoPago"
+                                        data-concepto="@ingreso.Concepto"
+                                        data-monto="@ingreso.Monto">
+                                    Editar
+                                </button>
+                                <a href="javascript:void(0);" class="btn btn-sm btn-danger" onclick="confirmarEliminacion(@ingreso.IdDetalleVenta, '/DetallesVenta/Eliminar')">Eliminar</a>
                             </td>
                         </tr>
                     }
@@ -77,7 +82,62 @@
 </div>
 
 
+<!-- Modal para Agregar/Editar Ingresos -->
+<div class="modal fade" id="modalIngreso" tabindex="-1" aria-labelledby="modalIngresoLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="modalIngresoLabel">Registrar Ingreso</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formIngreso" method="post">
+                    <!-- Campo oculto para el ID (usado al editar) -->
+                    <input type="hidden" id="IdDetalleVenta" name="IdDetalleVenta"/>
+
+                    <div class="mb-3">
+                        <label for="Fecha" class="form-label fw-bold">Fecha:</label>
+                        <input type="date" class="form-control" id="Fecha" name="Fecha" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="MetodoPagoId" class="form-label fw-bold">Método de Pago:</label>
+                        <select class="form-select" id="MetodoPagoId" name="MetodoPagoId" required>
+                            <option value="">Seleccionar</option>
+                            @foreach (var metodo in ViewBag.MetodoPago)
+                            {
+                                <option value="@metodo.IdMetodoPago">@metodo.Descripcion</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Concepto" class="form-label fw-bold">Concepto:</label>
+                        <input type="text" class="form-control" id="Concepto" name="Concepto" placeholder="Descripción del ingreso" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Monto" class="form-label fw-bold">Monto:</label>
+                        <input type="number" class="form-control" id="Monto" name="Monto" step="0.01" placeholder="Ingrese el monto" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" form="formIngreso" class="btn btn-success">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type="hidden" id="tempMensaje" value="@TempData["MensajeIngresos"]" />
+<input type="hidden" id="tempTipoMensaje" value="@TempData["TipoMensajeIngresos"]" />
+
+
+
+
+
 @section Scripts {
-    <script src="~/js/FiltroIngresos.js" asp-append-version="true"></script>
+    <script src="~/js/Ingresos.js" asp-append-version="true"></script>
    
 }

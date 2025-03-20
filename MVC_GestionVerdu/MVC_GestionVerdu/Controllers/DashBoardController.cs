@@ -123,19 +123,25 @@ namespace MVC_GestionVerdu.Controllers
 
 
         [HttpPost]
-
-        public async Task<IActionResult> Eliminar(int id)
-        {
-
-            await _productoService.EliminarProducto(id);
-            
-            
-           
-            return RedirectToAction("Index");
-
-
-
-
+public async Task<IActionResult> Eliminar(int id){
+                    
+            var producto = await _productoService.GetProducto(id);
+            if (producto == null)
+            {
+                return Json(new { success = false, message = "El producto no existe." });
+            }
+            try
+            {
+                await _productoService.EliminarProducto(id);
+                return Json(new { success = true, message = "Producto eliminado correctamente." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "Error al eliminar el producto: " + ex.Message });
+            }
+                
+        
+        
         }
 
 

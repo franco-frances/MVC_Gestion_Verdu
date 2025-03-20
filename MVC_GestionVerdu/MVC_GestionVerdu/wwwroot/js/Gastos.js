@@ -15,7 +15,7 @@ $(function () {
     });
 
     // Abrir modal en modo "Editar"
-    $(".btnEditarGasto").on("click",function () {
+    $(".btnEditarGasto").on("click", function () {
         let id = $(this).data("id");
         let fecha = $(this).data("fecha");
         let concepto = $(this).data("concepto");
@@ -32,38 +32,24 @@ $(function () {
         $("#modalAgregarGasto").modal("show");
     });
 
-    // Enviar formulario con AJAX
-    $("#formGasto").on("submit", function (e) {
-        e.preventDefault();
-        let form = $(this);
-        let url = form.attr("action");
+    // Mostrar SweetAlert después de la recarga si hay un mensaje en TempData
+    var mensaje = $("#tempMensaje").val();
+    var tipoMensaje = $("#tempTipoMensaje").val();
 
-        $.ajax({
-            url: url,
-            type: "POST",
-            data: form.serialize(),
-            success: function (response) {
-                if (response.success) {
-                    $("#modalAgregarGasto").modal("hide");
-                    Swal.fire({
-                        icon: "success",
-                        title: "¡Éxito!",
-                        text: response.message,
-                        timer: 2000,
-                        showConfirmButton: false
-                    }).then(() => {
-                        location.reload();
-                    });
-                } else {
-                    Swal.fire("Error", response.message, "error");
-                }
-            },
-            error: function () {
-                Swal.fire("Error", "Ocurrió un error.", "error");
-            }
+    if (mensaje && mensaje.trim() !== "") {
+        Swal.fire({
+            icon: tipoMensaje || "info", // Si no hay tipo de mensaje, usa "info" por defecto
+            title: "¡Éxito!",
+            text: mensaje,
+            timer: 2000,
+            showConfirmButton: false
         });
-    });
+    }
 });
+
+
+
+
 
 
 function filtrarGastos() {
@@ -92,4 +78,49 @@ function filtrarGastos() {
     // Mostrar total de gastos filtrados
     document.getElementById("totalGastos").textContent = "$" + totalGastos.toLocaleString("es-AR", { minimumFractionDigits: 2 });
 }
+
+
+
+//function confirmarEliminacionGasto(id, url) {
+//    Swal.fire({
+//        title: "¿Estás seguro?",
+//        text: "Esta acción no se puede deshacer",
+//        icon: "warning",
+//        showCancelButton: true,
+//        confirmButtonColor: "#d33",
+//        cancelButtonColor: "#3085d6",
+//        confirmButtonText: "Sí, eliminar",
+//        cancelButtonText: "Cancelar"
+//    }).then((result) => {
+//        if (result.isConfirmed) {
+//            $.ajax({
+//                url: url,
+//                type: "POST",
+//                data: { id: id },
+//                success: function (response) {
+//                    if (response.success) {
+//                        Swal.fire({
+//                            icon: "success",
+//                            title: "Eliminado",
+//                            text: response.message,
+//                            timer: 2000,
+//                            showConfirmButton: false
+//                        });
+
+//                        // Eliminar la fila del gasto eliminado sin recargar la página
+//                        $("#fila-" + id).fadeOut(500, function () {
+//                            $(this).remove();
+//                        });
+//                    } else {
+//                        Swal.fire("Error", response.message, "error");
+//                    }
+//                },
+//                error: function () {
+//                    Swal.fire("Error", "Ocurrió un error al eliminar.", "error");
+//                }
+//            });
+//        }
+//    });
+//}
+
 

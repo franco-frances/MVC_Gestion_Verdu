@@ -42,21 +42,32 @@ function confirmarEliminacion(id, url) {
         cancelButtonText: "Cancelar"
     }).then((result) => {
         if (result.isConfirmed) {
-            // Crear formulario dinámico para enviar el POST
-            let form = document.createElement("form");
-            form.method = "POST";
-            form.action = url; // Usar la URL pasada como argumento
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: { id: id },
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Eliminado",
+                            text: response.message,
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
 
-            // Crear input oculto para enviar el ID
-            let input = document.createElement("input");
-            input.type = "hidden";
-            input.name = "id";
-            input.value = id;
-
-            // Agregar input al formulario y enviarlo
-            form.appendChild(input);
-            document.body.appendChild(form);
-            form.submit();
+                        // Eliminar la fila del gasto eliminado sin recargar la página
+                        $("#fila-" + id).fadeOut(500, function () {
+                            $(this).remove();
+                        });
+                    } else {
+                        Swal.fire("Error", response.message, "error");
+                    }
+                },
+                error: function () {
+                    Swal.fire("Error", "Ocurrió un error al eliminar.", "error");
+                }
+            });
         }
     });
 }
