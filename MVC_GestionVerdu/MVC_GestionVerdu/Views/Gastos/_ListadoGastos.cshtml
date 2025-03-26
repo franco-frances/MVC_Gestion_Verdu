@@ -1,0 +1,65 @@
+﻿@model IEnumerable<MVC_GestionVerdu.Models.Gastos>
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-dark text-white">
+            <h5>Lista de Gastos</h5>
+        </div>
+        <div class="card-body">
+            <table id="tablaGastos" class="table table-striped table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Concepto</th>
+                        <th>Monto ($)</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var gasto in Model)
+                    {
+                        <tr id="fila-@gasto.IdGasto" class="gasto-row" data-id="@gasto.IdGasto">
+                            <td class="fecha">@gasto.Fecha.ToString("yyyy-MM-dd")</td>
+                            <td class="concepto">@gasto.Concepto</td>
+                            <td class="monto">@gasto.Monto.ToString("C")</td>
+                            <td>
+                                <button class="btn btn-sm btn-warning btnEditarGasto"
+                                        data-id="@gasto.IdGasto"
+                                        data-fecha="@gasto.Fecha.ToString("yyyy-MM-dd")"
+                                        data-concepto="@gasto.Concepto"
+                                        data-monto="@gasto.Monto">
+                                    Editar
+                                </button>
+                                <a href="javascript:void(0);" class="btn btn-sm btn-danger"
+                                   onclick="confirmarEliminacion(@gasto.IdGasto, '/Gastos/Eliminar')">
+                                    Eliminar
+                                </a>
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+
+            <input type="hidden" id="totalMontoHidden" value="@ViewBag.TotalMonto" />
+
+            <!-- Controles de paginación -->
+            <nav aria-label="Paginación">
+                <ul class="pagination">
+                    @{
+                        int totalRegistros = ViewBag.TotalRegistros ?? 0;
+                        int pageSize = ViewBag.PageSize ?? 10;
+                        int pageNumber = ViewBag.PageNumber ?? 1;
+                        int totalPaginas = (int)Math.Ceiling((double)totalRegistros / pageSize);
+                    }
+                    @for (int i = 1; i <= totalPaginas; i++)
+                    {
+                        <li class="page-item @(i == pageNumber ? "active" : "")">
+                            <a class="page-link pagina" href="#" data-page="@i">@i</a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>

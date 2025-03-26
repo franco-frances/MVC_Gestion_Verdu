@@ -30,6 +30,47 @@ namespace MVC_GestionVerdu.Services
 
 
 
+        public async Task<(IEnumerable<DetallesVenta> ventas, int totalRegistros, decimal totalMonto)> GetVentasPaginadas(int usuarioId, string? metodoPago, DateTime? fechaInicio, DateTime? fechaFin, int pageNumber, int pageSize) {
+
+            var query = _context.DetallesVentas.Include(v => v.MetodoPago).Where(v => v.UsuarioId == usuarioId);
+
+            if (!string.IsNullOrEmpty(metodoPago))
+                query = query.Where(v => v.MetodoPago.Descripcion == metodoPago);
+
+
+            // Aplicar filtros de fecha si existen
+            if (fechaInicio.HasValue)
+                query = query.Where(v => v.Fecha >= fechaInicio.Value);
+
+            if (fechaFin.HasValue)
+                query = query.Where(v => v.Fecha <= fechaFin.Value);
+
+            int totalRegistros = await query.CountAsync();
+
+            // Solo calcular totalMonto si se ha filtrado por alguna fecha; de lo contrario, se asigna 0
+            decimal totalMonto = 0;
+            if (fechaInicio.HasValue || fechaFin.HasValue)
+            {
+                totalMonto = await query.SumAsync(v => v.Monto);
+            }
+
+
+            var ventas = await query
+                               .OrderByDescending(v => v.Fecha)  // Por ejemplo, ordenar por fecha
+                               .Skip((pageNumber - 1) * pageSize)
+                               .Take(pageSize)
+                               .ToListAsync();
+
+            return (ventas, totalRegistros, totalMonto);
+
+
+
+        }
+
+
+
+
+
 
 
         public async Task<DetallesVenta> GetVentasById(int id)

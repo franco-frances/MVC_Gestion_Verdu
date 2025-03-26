@@ -26,12 +26,22 @@ namespace MVC_GestionVerdu.Controllers
             ViewBag.MetodoPago= await _metodoPagoService.GetMetodoPagos();
 
 
-            var ventas = await _ventaService.GetVentas(usuarioId);
+            return View();
+        }
 
-            
 
+        public async Task<IActionResult> ListadoPaginado(string? metodoPago, DateTime? fechaInicio, DateTime? fechaFin, int pageNumber = 1, int pageSize = 10) {
 
-            return View(ventas);
+            int usuarioId = int.Parse(HttpContext.Session.GetString("UsuarioId"));
+            var (ventas, totalRegistros, totalMonto) = await _ventaService.GetVentasPaginadas(usuarioId, metodoPago, fechaInicio, fechaFin, pageNumber, pageSize);
+
+            ViewBag.TotalRegistros = totalRegistros;
+            ViewBag.PageNumber = pageNumber;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalMonto = totalMonto;
+
+            return PartialView("_ListadoVentas", ventas);
+
         }
 
 
@@ -73,9 +83,6 @@ namespace MVC_GestionVerdu.Controllers
 
             await _ventaService.AgregarVenta(venta);
 
-            TempData["MensajeIngresos"] = "Ingreso agregado correctamente.";
-            TempData["TipoMensajeIngresos"] = "success"; // Para SweetAlert
-
             if (origen == "ingresosRapidos")
             {
 
@@ -84,6 +91,9 @@ namespace MVC_GestionVerdu.Controllers
 
             }
 
+
+            TempData["MensajeIngresos"] = "Ingreso agregado correctamente.";
+            TempData["TipoMensajeIngresos"] = "success"; // Para SweetAlert
 
 
             return RedirectToAction("Index");

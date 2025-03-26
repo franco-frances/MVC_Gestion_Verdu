@@ -16,17 +16,33 @@ namespace MVC_GestionVerdu.Controllers
             
         }
 
+        public async Task<IActionResult> ListadoPaginado(DateTime? fechaInicio, DateTime? fechaFin, int pageNumber = 1, int pageSize = 10)
+        {
+            int usuarioId = int.Parse(HttpContext.Session.GetString("UsuarioId"));
+            var (gastos, totalRegistros, totalMonto) = await _gastoService.GetGastosPaginados(usuarioId, fechaInicio, fechaFin, pageNumber, pageSize);
+
+            // Si deseas devolver un PartialView:
+            ViewBag.TotalRegistros = totalRegistros;
+            ViewBag.PageNumber = pageNumber;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalMonto = totalMonto;
+            return PartialView("_ListadoGastos", gastos);
+
+            // O bien, devolver JSON:
+            // return Json(new { gastos, totalRegistros });
+        }
+
+
+
 
 
         public async Task<IActionResult> Index()
         {       
             int usuarioId = int.Parse(HttpContext.Session.GetString("UsuarioId"));
             
-            var gastos = await _gastoService.GetGastos(usuarioId);
+                                                       
 
-                                
-
-            return View(gastos);
+            return View();
         }
 
 
@@ -55,8 +71,6 @@ namespace MVC_GestionVerdu.Controllers
 
             await _gastoService.AgregarGasto(gasto);
             
-            TempData["MensajeGastos"] = "Gasto agregado correctamente.";
-            TempData["TipoMensajeGastos"] = "success"; // Para SweetAlert
 
             if (origen == "gastosRapidos")
             {
@@ -66,6 +80,8 @@ namespace MVC_GestionVerdu.Controllers
 
             }
 
+            TempData["MensajeGastos"] = "Gasto agregado correctamente.";
+            TempData["TipoMensajeGastos"] = "success"; // Para SweetAlert
 
 
             return RedirectToAction("Index");

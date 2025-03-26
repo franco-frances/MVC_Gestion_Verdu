@@ -3,9 +3,8 @@
 
     <h1>Ingresos</h1>
 
-
-<div class="row mb-3">
-    <div class="col-md-3">
+<div class="row mb-3 align-items-end">
+    <div class="col-md-2">
         <label for="filtroMetodoPago" class="form-label">Método de Pago:</label>
         <select id="filtroMetodoPago" class="form-select">
             <option value="">Todos</option>
@@ -22,8 +21,11 @@
         <label for="fechaFin" class="form-label">Hasta:</label>
         <input type="date" id="fechaFin" class="form-control">
     </div>
-    <div class="col-md-3 d-flex align-items-end">
-        <button class="btn btn-primary w-100" onclick="filtrarIngresos()">Filtrar</button>
+    <div class="col-md-2">
+        <button class="btn btn-primary w-100" id="btnFiltrar">Filtrar</button>
+    </div>
+    <div class="col-md-2">
+        <button id="btnLimpiarFiltro" class="btn btn-secondary w-100">Limpiar Filtro</button>
     </div>
 </div>
 
@@ -37,48 +39,8 @@
 </div>
 
 
-<div class="container mt-4">
-    <div class="card shadow">
-        <div class="card-header bg-dark text-white">
-            <h5>Lista de Ingresos</h5>
-        </div>
-        <div class="card-body">
-            <table id="tablaIngresos" class="table table-striped table-bordered">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Método de Pago</th>
-                        <th>Concepto</th>
-                        <th>Monto ($)</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var ingreso in Model)
-
-                    {
-                        <tr id="fila-@ingreso.IdDetalleVenta" class="ingreso-row">
-                            <td class="fecha">@ingreso.Fecha.ToString("yyyy-MM-dd")</td>
-                            <td class="metodo-pago">@ingreso.MetodoPago.Descripcion</td>
-                            <td>@ingreso.Concepto</td>
-                            <td class="monto">@ingreso.Monto.ToString("C")</td>
-                            <td>
-                                <button class="btn btn-sm btn-warning btnEditarIngreso"
-                                        data-id="@ingreso.IdDetalleVenta"
-                                        data-fecha="@ingreso.Fecha.ToString("yyyy-MM-dd")"
-                                        data-metodopagoid="@ingreso.MetodoPago.IdMetodoPago"
-                                        data-concepto="@ingreso.Concepto"
-                                        data-monto="@ingreso.Monto">
-                                    Editar
-                                </button>
-                                <a href="javascript:void(0);" class="btn btn-sm btn-danger" onclick="confirmarEliminacion(@ingreso.IdDetalleVenta, '/DetallesVenta/Eliminar')">Eliminar</a>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div>
+<div id="contenedorListadoVentas">
+    @* @await Html.PartialAsync("_ListadoVentas", Model) *@
 </div>
 
 

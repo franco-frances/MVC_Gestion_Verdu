@@ -16,6 +16,37 @@ namespace MVC_GestionVerdu.Services
             _context = context;
             
         }
+        public async Task<(IEnumerable<Gastos> gastos, int totalRegistros, decimal totalMonto)> GetGastosPaginados(int usuarioId, DateTime? fechaInicio, DateTime? fechaFin, int pageNumber, int pageSize)
+        {
+            var query = _context.Gastos.Where(g => g.UsuarioId == usuarioId);
+
+            // Aplicar filtros de fecha si existen
+            if (fechaInicio.HasValue)
+                query = query.Where(g => g.Fecha >= fechaInicio.Value);
+
+            if (fechaFin.HasValue)
+                query = query.Where(g => g.Fecha <= fechaFin.Value);
+
+            int totalRegistros = await query.CountAsync();
+
+            // Solo calcular totalMonto si se ha filtrado por alguna fecha; de lo contrario, se asigna 0
+            decimal totalMonto = 0;
+            if (fechaInicio.HasValue || fechaFin.HasValue)
+            {
+                totalMonto = await query.SumAsync(g => g.Monto);
+            }
+
+            var gastos = await query
+                                .OrderByDescending(g => g.Fecha)  // Por ejemplo, ordenar por fecha
+                                .Skip((pageNumber - 1) * pageSize)
+                                .Take(pageSize)
+                                .ToListAsync();
+
+            return (gastos, totalRegistros, totalMonto);
+        }
+
+
+
 
 
         public async Task<IEnumerable<Gastos>> GetGastos(int idUsuario)

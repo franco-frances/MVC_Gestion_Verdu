@@ -15,7 +15,7 @@ $(function () {
     });
 
     // Abrir modal en modo "Editar"
-    $(".btnEditarGasto").on("click", function () {
+    $(document).on('click', '.btnEditarGasto', function() {
         let id = $(this).data("id");
         let fecha = $(this).data("fecha");
         let concepto = $(this).data("concepto");
@@ -32,95 +32,57 @@ $(function () {
         $("#modalAgregarGasto").modal("show");
     });
 
-    //// Mostrar SweetAlert después de la recarga si hay un mensaje en TempData
-    //var mensaje = $("#tempMensaje").val();
-    //var tipoMensaje = $("#tempTipoMensaje").val();
-
-    //if (mensaje && mensaje.trim() !== "") {
-    //    Swal.fire({
-    //        icon: tipoMensaje || "info", // Si no hay tipo de mensaje, usa "info" por defecto
-    //        title: "¡Éxito!",
-    //        text: mensaje,
-    //        timer: 2000,
-    //        showConfirmButton: false
-    //    });
-    //}
+    
 });
 
 
 
 
+function cargarGastos(pageNumber = 1) {
+    let fechaInicio = $("#fechaInicio").val();
+    let fechaFin = $("#fechaFin").val();
+    console.time("Carga de gastos");
 
+    $.ajax({
+        url: '/Gastos/ListadoPaginado',
+        data: { fechaInicio: fechaInicio, fechaFin: fechaFin, pageNumber: pageNumber, pageSize: 10 },
+        type: 'GET',
+        success: function (data) {
+            $("#contenedorListadoGastos").html(data);
 
-function filtrarGastos() {
-    let fechaInicio = document.getElementById("fechaInicio").value;
-    let fechaFin = document.getElementById("fechaFin").value;
-    let filas = document.querySelectorAll(".gasto-row");
-    let totalGastos = 0;
-
-    filas.forEach(fila => {
-        let fecha = fila.querySelector(".fecha").textContent;
-        let montoTexto = fila.querySelector(".monto").textContent.replace("$", "").replace(",", ""); // Remove the dollar sign and comma (thousand separator)
-        let montoNumerico = parseFloat(montoTexto); // Convert to number directly
-
-        let fechaFormateada = fecha.split("/").reverse().join("-"); // Converts dd/MM/yyyy to yyyy-MM-dd
-
-        let coincideFecha = (!fechaInicio || fechaFormateada >= fechaInicio) && (!fechaFin || fechaFormateada <= fechaFin);
-
-        if (coincideFecha) {
-            fila.style.display = "";
-            totalGastos += montoNumerico;
-        } else {
-            fila.style.display = "none";
+            let totalMonto = $("#totalMontoHidden").val(); // Tomamos el valor del campo oculto
+            $("#totalMonto").text("$" + parseFloat(totalMonto).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+            console.timeEnd("Carga de gastos"); // Mide el tiempo hasta aquí
+        },
+        error: function () {
+            alert("Error al cargar los datos");
         }
     });
-
-    // Mostrar total de gastos filtrados
-    document.getElementById("totalGastos").textContent = "$" + totalGastos.toLocaleString("es-AR", { minimumFractionDigits: 2 });
 }
 
+$("#btnFiltrar").on("click", function () {
+    cargarGastos(1);
+});
+
+$(document).on("click", ".pagina", function (e) {
+    e.preventDefault();
+    let page = $(this).data("page");
+    cargarGastos(page);
+});
+
+$("#btnLimpiarFiltro").on("click", function () {
+    // Limpiar los campos de fecha
+    $("#fechaInicio").val("");
+    $("#fechaFin").val("");
+
+    // Volver a cargar la primera página sin filtro
+    cargarGastos(1);
+});
+
+$(function () {
+    cargarGastos();
+});
 
 
-//function confirmarEliminacionGasto(id, url) {
-//    Swal.fire({
-//        title: "¿Estás seguro?",
-//        text: "Esta acción no se puede deshacer",
-//        icon: "warning",
-//        showCancelButton: true,
-//        confirmButtonColor: "#d33",
-//        cancelButtonColor: "#3085d6",
-//        confirmButtonText: "Sí, eliminar",
-//        cancelButtonText: "Cancelar"
-//    }).then((result) => {
-//        if (result.isConfirmed) {
-//            $.ajax({
-//                url: url,
-//                type: "POST",
-//                data: { id: id },
-//                success: function (response) {
-//                    if (response.success) {
-//                        Swal.fire({
-//                            icon: "success",
-//                            title: "Eliminado",
-//                            text: response.message,
-//                            timer: 2000,
-//                            showConfirmButton: false
-//                        });
-
-//                        // Eliminar la fila del gasto eliminado sin recargar la página
-//                        $("#fila-" + id).fadeOut(500, function () {
-//                            $(this).remove();
-//                        });
-//                    } else {
-//                        Swal.fire("Error", response.message, "error");
-//                    }
-//                },
-//                error: function () {
-//                    Swal.fire("Error", "Ocurrió un error al eliminar.", "error");
-//                }
-//            });
-//        }
-//    });
-//}
 
 
