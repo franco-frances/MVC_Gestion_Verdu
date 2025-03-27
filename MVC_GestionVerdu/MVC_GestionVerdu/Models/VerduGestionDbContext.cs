@@ -106,7 +106,7 @@ public partial class VerduGestionDbContext : DbContext
             entity.Property(e => e.Descripcion)
                 .HasMaxLength(100)
                 .IsUnicode(false);
-            entity.Property(e => e.MargenGanancia).HasColumnType("decimal(5, 2)");
+            entity.Property(e => e.MargenGanancia).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.PesoCajon).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.PrecioCajon).HasColumnType("decimal(10, 2)");
 
