@@ -65,8 +65,11 @@
 
             <!-- Tabla de Productos -->
             <div class="card shadow rounded-3 mb-4">
-                <div class="card-header bg-dark text-white">
+                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Lista de Productos</h5>
+                    <a href="@Url.Action("DescargarPdfProductos", "Dashboard")" class="btn btn-sm btn-light" title="Descargar PDF">
+                        <i class="bi bi-file-earmark-pdf"></i>
+                    </a>
                 </div>
                 <div class="card-body p-4">
                     <table class="table table-hover align-middle text-center" id="tablaProductos">

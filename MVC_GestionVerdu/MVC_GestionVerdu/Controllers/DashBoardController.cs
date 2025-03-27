@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MVC_GestionVerdu.Interfaces;
 using MVC_GestionVerdu.Models;
+using PdfSharp.Drawing;
+using PdfSharp.Pdf;
 
 namespace MVC_GestionVerdu.Controllers
 {
@@ -190,6 +192,62 @@ namespace MVC_GestionVerdu.Controllers
         
         
         }
+
+
+        [HttpGet]
+        public async Task<IActionResult> DescargarPdfProductos()
+        {
+            // Obtén el usuario actual (ejemplo usando Session)
+            int usuarioId = int.Parse(HttpContext.Session.GetString("UsuarioId"));
+            var productos = await _productoService.ListarProductos(usuarioId);
+
+            // Crea un nuevo documento PDF
+            PdfDocument document = new PdfDocument();
+            document.Info.Title = "Lista de Productos";
+
+            // Agrega una página y obtiene el objeto gráfico
+            PdfPage page = document.AddPage();
+            XGraphics gfx = XGraphics.FromPdfPage(page);
+
+            // Define las fuentes
+            XFont tituloFuente = new XFont("Verdana", 20, XFontStyleEx.Bold);
+            XFont textoFuente = new XFont("Verdana", 12, XFontStyleEx.Regular);
+
+            // Dibujar el título centrado
+            gfx.DrawString("Lista de Productos", tituloFuente, XBrushes.Black,
+                           new XRect(0, 20, page.Width, 40), XStringFormats.TopCenter);
+
+            // Posición inicial para listar los productos
+            int posY = 60;
+            int margenIzquierdo = 40;
+            int saltoLinea = 20;
+
+            // Iterar sobre cada producto
+            foreach (var producto in productos)
+            {
+                string linea = $"{producto.Descripcion} - {(producto.PrecioFinal.HasValue ? producto.PrecioFinal.Value.ToString("C") : "N/A")}";
+                gfx.DrawString(linea, textoFuente, XBrushes.Black, margenIzquierdo, posY);
+
+                posY += saltoLinea;
+
+                // Si se excede el alto de la página, crea una nueva página
+                if (posY > page.Height - 40)
+                {
+                    page = document.AddPage();
+                    gfx = XGraphics.FromPdfPage(page);
+                    posY = 40; // reinicia el margen superior en la nueva página
+                }
+            }
+
+            // Guardar el documento en un MemoryStream
+            using (MemoryStream stream = new MemoryStream())
+            {
+                document.Save(stream, false);
+                // Retorna el PDF para su descarga
+                return File(stream.ToArray(), "application/pdf", "ListaProductos.pdf");
+            }
+        }
+
 
 
 
