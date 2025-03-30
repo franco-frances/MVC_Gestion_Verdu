@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using MVC_GestionVerdu.Interfaces;
 using MVC_GestionVerdu.Models;
+using MVC_GestionVerdu.Services.Interfaces;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 

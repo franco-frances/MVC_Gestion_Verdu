@@ -1,6 +1,6 @@
 ﻿using MVC_GestionVerdu.Models;
 
-namespace MVC_GestionVerdu.Interfaces
+namespace MVC_GestionVerdu.Services.Interfaces
 {
     public interface ICategoriaService
     {

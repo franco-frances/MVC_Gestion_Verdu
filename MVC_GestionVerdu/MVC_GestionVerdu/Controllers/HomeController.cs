@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using MVC_GestionVerdu.Interfaces;
+using MVC_GestionVerdu.Services.Interfaces;
 using MVC_GestionVerdu.Models;
 using System.Diagnostics;
 

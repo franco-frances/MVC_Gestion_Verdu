@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MVC_GestionVerdu.Services;
 using MVC_GestionVerdu.Models;
-using MVC_GestionVerdu.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
+using MVC_GestionVerdu.Services.Interfaces;
 
 
 namespace MVC_GestionVerdu.Controllers

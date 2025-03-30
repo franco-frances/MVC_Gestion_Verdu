@@ -1,55 +1,51 @@
 ﻿using MVC_GestionVerdu.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
-using MVC_GestionVerdu.Interfaces;
+using MVC_GestionVerdu.Services.Interfaces;
+using MVC_GestionVerdu.Repositories.Interfaces;
 
 namespace MVC_GestionVerdu.Services
 {
-
-    
 
 
     public class ProductoServices:IProductoService
     {
 
-        private readonly VerduGestionDbContext _context;
+        private readonly IProductoRepository _productoRepository;
 
-        public ProductoServices(VerduGestionDbContext context)
+        public ProductoServices(IProductoRepository productoRepository)
         {
-           
-            _context = context;
+
+            _productoRepository = productoRepository;
 
         }
 
 
         public async Task<IEnumerable<Producto>> ListarProductos(int usuarioId)
         {
-            var productos = await _context.Productos.Where(u=> u.UsuarioId==usuarioId).OrderBy(p=> p.Descripcion).ToListAsync();
-            return productos;
+            return await _productoRepository.GetAllAsync(usuarioId);
         }
 
 
         public async Task<Producto> GetProducto(int id)
         {
 
-            var Producto = await _context.Productos.FirstOrDefaultAsync(p => p.IdProductos == id);
-            return Producto;
+           
+            return await _productoRepository.GetbyIdAsync(id);
 
 
         }
 
         public async Task AgregarProducto(Producto producto)
         {
-            await _context.Productos.AddAsync(producto);
-            await _context.SaveChangesAsync();
+            await _productoRepository.AddAsync(producto);
         }
 
 
         public async Task EditarProducto(Producto producto)
         {
 
-            _context.Productos.Update(producto);
-            await _context.SaveChangesAsync();
+            await _productoRepository.UpdateAsync(producto);
             
 
         }
@@ -57,9 +53,7 @@ namespace MVC_GestionVerdu.Services
         public async Task EliminarProducto(int id)
         {
 
-            var Producto = await _context.Productos.FirstOrDefaultAsync(p => p.IdProductos == id);
-            _context.Productos.Remove(Producto);
-            await _context.SaveChangesAsync();
+            await _productoRepository.DeleteAsync(id);
             
 
         }

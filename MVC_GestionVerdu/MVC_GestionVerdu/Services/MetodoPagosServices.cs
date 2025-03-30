@@ -1,29 +1,33 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MVC_GestionVerdu.Interfaces;
 using MVC_GestionVerdu.Models;
+using MVC_GestionVerdu.Repositories.Interfaces;
+using MVC_GestionVerdu.Services.Interfaces;
 
 namespace MVC_GestionVerdu.Services
 {
     public class MetodoPagosServices: IMetodoPagoService
     {
-        private readonly VerduGestionDbContext _context;
+        private readonly IMetodoPagosRepository _metodoPagosRepository;
 
 
-        public MetodoPagosServices(VerduGestionDbContext context)
+        public MetodoPagosServices(IMetodoPagosRepository metodoPagosRepository)
         {
 
-            _context = context;
+            _metodoPagosRepository = metodoPagosRepository;
 
         }
 
         public async Task<IEnumerable<MetodoPago>> GetMetodoPagos()
         {
 
-            var metodoPago = await _context.MetodoPagos.ToListAsync();
-            return metodoPago;
+
+            return await _metodoPagosRepository.GetAllasync();
 
 
         }
+
+
+
 
 
 

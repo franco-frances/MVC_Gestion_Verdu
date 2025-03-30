@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using MVC_GestionVerdu.Interfaces;
 using MVC_GestionVerdu.Models;
+using MVC_GestionVerdu.Repositories.Interfaces;
+using MVC_GestionVerdu.Repositories;
 using MVC_GestionVerdu.Services;
+using MVC_GestionVerdu.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,17 @@ builder.Services.AddScoped<IGastoService, GastosServices>();
 builder.Services.AddScoped<IAuthService, AuthServices>();
 builder.Services.AddScoped<IMetodoPagoService,MetodoPagosServices>();
 builder.Services.AddScoped<IReporteService, ReporteServices>();
+
+//Configuracion para Repositorios
+
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<IProductoRepository, ProductoRepository>();
+builder.Services.AddScoped<ICategoriaRepository, CategoriaRepository>();
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IVentasRepository, VentasRepository>();
+builder.Services.AddScoped<IGastosRepository, GastosRepository>();
+builder.Services.AddScoped<IMetodoPagosRepository, MetodoPagosRepository>();
+builder.Services.AddScoped<IReporteRepository, ReporteRepository>();
 
 builder.Services.AddDbContext<VerduGestionDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection")));

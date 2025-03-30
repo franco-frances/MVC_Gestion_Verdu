@@ -1,21 +1,22 @@
 ﻿using MVC_GestionVerdu.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
-using MVC_GestionVerdu.Interfaces;
+using MVC_GestionVerdu.Services.Interfaces;
+using MVC_GestionVerdu.Repositories.Interfaces;
 
 
 namespace MVC_GestionVerdu.Services
 {
-        
+
 
     public class UsuarioServices:IUsuarioService
     {
-        private readonly VerduGestionDbContext _context;
+        private readonly IUsuarioRepository _usuarioRepository;
 
-        public UsuarioServices(VerduGestionDbContext context)
+        public UsuarioServices(IUsuarioRepository usuarioRepository)
         {
-            
-            _context = context;
+
+            _usuarioRepository = usuarioRepository;
         }
 
 
@@ -23,8 +24,7 @@ namespace MVC_GestionVerdu.Services
 
         public async Task<IEnumerable<Usuario>> GetUsuarios()
         {
-            var usuarios = await _context.Usuarios.ToListAsync();
-            return usuarios;
+            return await _usuarioRepository.GetAllAsync();
 
 
         }
@@ -34,8 +34,7 @@ namespace MVC_GestionVerdu.Services
         public async Task<Usuario> GetUsuariosById(int id)
         {
 
-            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
-            return usuario;
+            return await _usuarioRepository.GetByIdAsync(id);
 
 
         }
@@ -45,8 +44,7 @@ namespace MVC_GestionVerdu.Services
         public async Task AgregarUsuario(Usuario usuario)
         {
 
-            await _context.Usuarios.AddAsync(usuario);
-            await _context.SaveChangesAsync();
+           await _usuarioRepository.AddAsync(usuario);
 
            
         }
@@ -58,8 +56,7 @@ namespace MVC_GestionVerdu.Services
         public async Task EditarUsuario(Usuario usuario)
         {
 
-            _context.Usuarios.Update(usuario);
-            await _context.SaveChangesAsync();
+            await _usuarioRepository.UpdateAsync(usuario);
 
            
 
@@ -70,9 +67,7 @@ namespace MVC_GestionVerdu.Services
         public async Task EliminarUsuario(int id)
         {
 
-            var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
-            _context.Usuarios.Remove(usuario);
-            await _context.SaveChangesAsync();
+            await _usuarioRepository.DeleteAsync(id);
 
            
         }

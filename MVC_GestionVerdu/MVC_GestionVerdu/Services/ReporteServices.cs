@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MVC_GestionVerdu.Interfaces;
 using MVC_GestionVerdu.Models;
+using MVC_GestionVerdu.Repositories.Interfaces;
+using MVC_GestionVerdu.Services.Interfaces;
 using System.Globalization;
 
 namespace MVC_GestionVerdu.Services
@@ -8,12 +9,12 @@ namespace MVC_GestionVerdu.Services
     public class ReporteServices:IReporteService
     {
 
-        private readonly VerduGestionDbContext _context;
+        private readonly IReporteRepository _reporteRepository;
 
-        public ReporteServices(VerduGestionDbContext context)
+        public ReporteServices(IReporteRepository reporteRepository)
         {
 
-            _context = context;
+            _reporteRepository = reporteRepository;
         }
 
         public async Task<ReporteViewModel> ObtenerReporteAsync(DateTime? fechaInicio, DateTime? fechaFin, string intervalo)
@@ -21,34 +22,24 @@ namespace MVC_GestionVerdu.Services
             fechaInicio ??= DateTime.Today.AddDays(-15);
             fechaFin ??= DateTime.Today;
 
-            // Obtener los ingresos y gastos con sus fechas y montos
-            var ingresosQuery = _context.DetallesVentas
-                .Where(v => v.Fecha >= fechaInicio && v.Fecha <= fechaFin)
-                .Select(v => new { Fecha = v.Fecha, Monto = v.Monto });
-
-            var gastosQuery = _context.Gastos
-                .Where(g => g.Fecha >= fechaInicio && g.Fecha <= fechaFin)
-                .Select(g => new { Fecha = g.Fecha, Monto = g.Monto });
-
-            var ingresosList = await ingresosQuery.ToListAsync();
-            var gastosList = await gastosQuery.ToListAsync();
+            // Obtener los ingresos y gastos desde el repositorio
+            var ingresosList = await _reporteRepository.ObtenerIngresosAsync(fechaInicio.Value, fechaFin.Value);
+            var gastosList = await _reporteRepository.ObtenerGastosAsync(fechaInicio.Value, fechaFin.Value);
 
             // Función para obtener la clave de agrupación según el intervalo
             Func<DateTime, DateTime> claveAgrupamiento = fecha =>
             {
                 if (intervalo.Equals("semana", StringComparison.OrdinalIgnoreCase))
                 {
-                    // Inicio de la semana (por ejemplo, domingo)
-                    return fecha.AddDays(-(int)fecha.DayOfWeek);
+                    return fecha.AddDays(-(int)fecha.DayOfWeek); // Inicio de la semana
                 }
                 else if (intervalo.Equals("mes", StringComparison.OrdinalIgnoreCase))
                 {
-                    // Primer día del mes
-                    return new DateTime(fecha.Year, fecha.Month, 1);
+                    return new DateTime(fecha.Year, fecha.Month, 1); // Primer día del mes
                 }
-                else // "diario" o cualquier otro valor por defecto
+                else
                 {
-                    return fecha.Date;
+                    return fecha.Date; // Diario o cualquier otro valor
                 }
             };
 
@@ -83,29 +74,26 @@ namespace MVC_GestionVerdu.Services
                 })
                 .ToList();
 
-            var culturaEspanol = new CultureInfo("es-ES");
-
             // Construir y retornar el ReporteViewModel
             return new ReporteViewModel
             {
-
                 FechaInicio = fechaInicio.Value,
                 FechaFin = fechaFin.Value,
-                Intervalo= intervalo,
+                Intervalo = intervalo,
                 Fechas = todasLasFechas.Select(f =>
-                                intervalo.Equals("semana", StringComparison.OrdinalIgnoreCase)
-                                ? $"del {f.ToString("dd 'de' MMMM", culturaEspanol)} al {f.AddDays(6).ToString("dd 'de' MMMM", culturaEspanol)}"
-                                : intervalo.Equals("mes", StringComparison.OrdinalIgnoreCase)
-                                ? f.ToString("MMMM yyyy", culturaEspanol)
-            :                      f.ToString("dd/MM/yyyy")).ToList(),
+                                    intervalo.Equals("semana", StringComparison.OrdinalIgnoreCase)
+                                    ? $"del {f.ToString("dd 'de' MMMM", new CultureInfo("es-ES"))} al {f.AddDays(6).ToString("dd 'de' MMMM", new CultureInfo("es-ES"))}"
+                                    : intervalo.Equals("mes", StringComparison.OrdinalIgnoreCase)
+                                    ? f.ToString("MMMM yyyy", new CultureInfo("es-ES"))
+                                    : f.ToString("dd/MM/yyyy")).ToList(),
                 Ingresos = todasLasFechas.Select(f => ingresosAgrupados.FirstOrDefault(i => i.Fecha == f)?.Total ?? 0).ToList(),
                 Gastos = todasLasFechas.Select(f => gastosAgrupados.FirstOrDefault(g => g.Fecha == f)?.Total ?? 0).ToList(),
                 Balance = balance.Select(b => b.Total).ToList()
-                
             };
         }
+    }
 
 
 
     }
-}
+
