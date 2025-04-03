@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MVC_GestionVerdu.Attributes;
 using MVC_GestionVerdu.Models;
 using MVC_GestionVerdu.Services.Interfaces;
 
@@ -15,7 +16,7 @@ namespace MVC_GestionVerdu.Controllers
             _gastoService = gastoService;
             
         }
-
+        [SessionAuthorize]
         public async Task<IActionResult> ListadoPaginado(DateTime? fechaInicio, DateTime? fechaFin, int pageNumber = 1, int pageSize = 10)
         {
             int usuarioId = int.Parse(HttpContext.Session.GetString("UsuarioId"));
@@ -35,7 +36,7 @@ namespace MVC_GestionVerdu.Controllers
 
 
 
-
+        [SessionAuthorize]
         public async Task<IActionResult> Index()
         {       
             int usuarioId = int.Parse(HttpContext.Session.GetString("UsuarioId"));
@@ -55,7 +56,8 @@ namespace MVC_GestionVerdu.Controllers
             return View(model);
 
         }
-
+        
+        [SessionAuthorize]
         [HttpPost]
         public async Task<IActionResult> AgregarGasto(Gastos gasto, string origen)
         {

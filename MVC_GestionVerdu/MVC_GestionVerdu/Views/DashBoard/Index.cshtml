@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Producto>
+﻿@model MVC_GestionVerdu.ViewModels.DashBoardViewModel
 
 @{
     ViewData["Title"] = "Dashboard";
@@ -19,7 +19,7 @@
                     <div class="card-custom">
                         <div class="card-body">
                             <h3 class="card-title">Total Hoy</h3>
-                            <p class="card-text">@ViewBag.TotalHoy.ToString("C")</p>
+                            <p class="card-text">@Model.Balance.ToString("C")</p>
                         </div>
                     </div>
                 </div>
@@ -27,7 +27,7 @@
                     <div class="card-custom ingresos">
                         <div class="card-body">
                             <h3 class="card-title">Total Ingresos</h3>
-                            <p class="card-text">@ViewBag.TotalIngresosHoy.ToString("C")</p>
+                            <p class="card-text">@Model.TotalVentas.ToString("C")</p>
                         </div>
                     </div>
                 </div>
@@ -35,7 +35,7 @@
                     <div class="card-custom gastos">
                         <div class="card-body">
                             <h3 class="card-title">Total Gastos</h3>
-                            <p class="card-text">@ViewBag.TotalGastosHoy.ToString("C")</p>
+                            <p class="card-text">@Model.TotalGastos.ToString("C")</p>
                         </div>
                     </div>
                 </div>
@@ -47,11 +47,11 @@
                     <input type="text" id="buscador" class="form-control rounded-pill shadow-sm" placeholder="Buscar producto..." onkeyup="filtrarProductos()">
                 </div>
                 <div class="col-md-6">
-                    <select id="filtroCategoria" class="form-select rounded-pill shadow-sm" onchange="filtrarProductos()">
+                    <select id="filtroCategoria" class="form-select rounded-pill shadow-sm"  onchange="filtrarProductos()">
                         <option value="">Todas las categorías</option>
-                        @foreach (var categoria in ViewBag.Categorias)
+                        @foreach (var categoria in Model.Categorias)
                         {
-                            <option value="@categoria.IdCategoria">@categoria.Descripcion</option>
+                            <option value="@categoria.Id">@categoria.Descripcion</option>
                         }
                     </select>
                 </div>
@@ -82,16 +82,16 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var producto in Model)
+                            @foreach (var producto in Model.Productos)
                             {
-                                <tr id="fila-@producto.IdProductos" class="producto-row">
+                                <tr id="fila-@producto.Id" class="producto-row" data-categoria="@producto.CategoriaId">
                                     <td class="nombre">@producto.Descripcion</td>
                                     <td>$@producto.PrecioFinal</td>
-                                    <td>@producto.Categoria.Descripcion</td>
+                                    <td>@producto.CategoriaNombre</td>
                                     <td>
                                         <a href="javascript:void(0);"
                                            class="btn btn-sm btn-warning rounded-pill btnEditarProducto"
-                                           data-id="@producto.IdProductos"
+                                           data-id="@producto.Id"
                                            data-descripcion="@producto.Descripcion"
                                            data-categoriaid="@producto.CategoriaId"
                                            data-precio="@producto.PrecioCajon"
@@ -100,7 +100,7 @@
                                            data-preciofinal="@producto.PrecioFinal"
                                            data-preciocosto="@producto.PrecioCosto">
                                            Editar</a>
-                                        <a href="javascript:void(0);" class="btn btn-sm btn-danger rounded-pill" onclick="confirmarEliminacion(@producto.IdProductos, '/DashBoard/Eliminar')">Eliminar</a>
+                                        <a href="javascript:void(0);" class="btn btn-sm btn-danger rounded-pill" onclick="confirmarEliminacion(@producto.Id, '/DashBoard/Eliminar')">Eliminar</a>
                                     </td>
                                 </tr>
                             }
@@ -127,7 +127,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var ingreso in ViewBag.IngresosHoy)
+                            @foreach (var ingreso in Model.VentasRecientes)
                             {
                                 <tr>
                                     <td>@ingreso.Fecha.ToString("yyyy-MM-dd")</td>
@@ -141,15 +141,15 @@
                         <h6 class="fw-bold mb-1">
                             <i class="bi bi-cash-stack me-1"></i> Total de Ingresos
                         </h6>
-                        <span id="totalIngresosHoy" class="fs-6 fw-semibold">@ViewBag.TotalIngresosHoy.ToString("C")</span>
+                        <span id="totalIngresosHoy" class="fs-6 fw-semibold">@Model.TotalVentas.ToString("C")</span>
                     </div>
                     <form asp-controller="DetallesVenta" asp-action="AgregarVenta" method="post" class="row g-3 align-items-center justify-content-center mt-3 mb-2">
                         <div class="col-md-3">
                             <select name="MetodoPagoId" class="form-select rounded-pill" required>
                                 <option value="">Seleccionar</option>
-                                @foreach (var metodo in ViewBag.MetodoPago)
+                                @foreach (var metodo in Model.MetodosPago)
                                 {
-                                    <option value="@metodo.IdMetodoPago">@metodo.Descripcion</option>
+                                    <option value="@metodo.Id">@metodo.Descripcion</option>
                                 }
                             </select>
                         </div>
@@ -183,7 +183,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach (var gasto in ViewBag.GastosHoy)
+                            @foreach (var gasto in Model.GastosRecientes)
                             {
                                 <tr>
                                     <td>@gasto.Fecha.ToString("yyyy-MM-dd")</td>
@@ -197,7 +197,7 @@
                         <h6 class="fw-bold mb-1">
                             <i class="bi bi-cart-dash me-1"></i> Total de Gastos
                         </h6>
-                        <span id="totalGastosHoy" class="fs-6 fw-semibold">@ViewBag.TotalGastosHoy.ToString("C")</span>
+                        <span id="totalGastosHoy" class="fs-6 fw-semibold">@Model.TotalGastos.ToString("C")</span>
                     </div>
 
                     <form asp-controller="Gastos" asp-action="AgregarGasto" method="post" class="row g-3 align-items-center justify-content-center mt-3 mb-2">

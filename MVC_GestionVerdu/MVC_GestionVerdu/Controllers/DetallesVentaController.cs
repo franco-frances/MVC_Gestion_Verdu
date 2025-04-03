@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MVC_GestionVerdu.Attributes;
 using MVC_GestionVerdu.Models;
 using MVC_GestionVerdu.Services;
 using MVC_GestionVerdu.Services.Interfaces;
@@ -17,7 +18,8 @@ namespace MVC_GestionVerdu.Controllers
             _ventaService = ventaService;
             _metodoPagoService = metodoPagoService; 
         }
-
+        
+        [SessionAuthorize]
         public async Task<IActionResult> Index()
         {
 
@@ -29,7 +31,7 @@ namespace MVC_GestionVerdu.Controllers
             return View();
         }
 
-
+        [SessionAuthorize]
         public async Task<IActionResult> ListadoPaginado(string? metodoPago, DateTime? fechaInicio, DateTime? fechaFin, int pageNumber = 1, int pageSize = 10) {
 
             int usuarioId = int.Parse(HttpContext.Session.GetString("UsuarioId"));
@@ -65,7 +67,7 @@ namespace MVC_GestionVerdu.Controllers
         }
 
 
-
+        [SessionAuthorize]
         [HttpPost]
         public async Task<IActionResult> AgregarVenta(DetallesVenta venta, string origen)
         {
@@ -121,7 +123,7 @@ namespace MVC_GestionVerdu.Controllers
             return View(venta);
 
         }
-
+        [SessionAuthorize]
         [HttpPost]
 
         public async Task<IActionResult> Editar(DetallesVenta venta) {

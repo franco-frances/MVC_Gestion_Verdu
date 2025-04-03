@@ -26,9 +26,15 @@ namespace MVC_GestionVerdu.Controllers
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public IActionResult Error(string mensaje = "Ocurrió un error inesperado.")
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var model = new ErrorViewModel
+            {
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
+                Mensaje = mensaje
+            };
+
+            return View(model);
         }
     }
 }

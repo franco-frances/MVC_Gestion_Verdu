@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MVC_GestionVerdu.Attributes;
 using MVC_GestionVerdu.Models;
 using MVC_GestionVerdu.Services;
 using MVC_GestionVerdu.Services.Interfaces;
@@ -35,10 +36,8 @@ namespace MVC_GestionVerdu.Controllers
         }
 
 
-
+        [SessionAuthorize]
         [HttpPost]
-
-
         public async Task<IActionResult> Create(Producto producto)
         {
 

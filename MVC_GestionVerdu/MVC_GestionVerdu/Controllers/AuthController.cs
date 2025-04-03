@@ -31,6 +31,9 @@ namespace MVC_GestionVerdu.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(Login model) // Cambia a Login
         {
+
+         
+
             if (!ModelState.IsValid) // Si el modelo no es válido, devolver la vista con errores
             {
                 return View(model);

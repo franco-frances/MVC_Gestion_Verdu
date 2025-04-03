@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using MVC_GestionVerdu.Attributes;
 using MVC_GestionVerdu.Models;
 using MVC_GestionVerdu.Services.Interfaces;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
+using MVC_GestionVerdu.ViewModels;
 
 namespace MVC_GestionVerdu.Controllers
 {
@@ -16,7 +18,8 @@ namespace MVC_GestionVerdu.Controllers
         private readonly IGastoService _gastoService;
         private readonly IMetodoPagoService _metodoPagoService;
 
-        public DashBoardController(IProductoService productoService, ICategoriaService categoriaService, IVentaService ventaService, IGastoService gastoService, IMetodoPagoService metodoPagoService)
+        public DashBoardController(IProductoService productoService, ICategoriaService categoriaService, 
+            IVentaService ventaService, IGastoService gastoService, IMetodoPagoService metodoPagoService)
         {
             
             _productoService = productoService;
@@ -27,67 +30,130 @@ namespace MVC_GestionVerdu.Controllers
         }
 
 
-
+        [SessionAuthorize]
         public async Task<IActionResult> Index()
         {
+            try
+            {
+                // Recupera datos necesarios
+                int usuarioId = int.Parse(HttpContext.Session.GetString("UsuarioId"));
+                var fechaActual = DateTime.Today;
 
-            var fechaActual = DateTime.Today;
+                // Lista de productos
+                var productos = await _productoService.ListarProductos(usuarioId);
 
-            int usuarioId = int.Parse(HttpContext.Session.GetString("UsuarioId"));
+                // Ventas y gastos del día
+                var ventasHoy = await _ventaService.GetVentasDelDia(usuarioId, fechaActual);
+                var gastosHoy = await _gastoService.GetGastosDelDia(usuarioId, fechaActual);
 
-            var productos= await _productoService.ListarProductos(usuarioId);
+                // Calcular totales
+                var totalVentasHoy = ventasHoy.Sum(v => v.Monto);
+                var totalGastosHoy = gastosHoy.Sum(g => g.Monto);
 
-            var ingresoHoy = await _ventaService.GetVentasDelDia(usuarioId, fechaActual);
+                // Obtener todas las categorías
+                var categorias = await _categoriaService.GetCategorias();
+                var categoriasViewModel = categorias.Select(c => new CategoriaViewModel
+                {
+                    Id = c.IdCategoria,
+                    Descripcion = c.Descripcion
+                }).ToList();
 
-            var totalIngresosHoy = ingresoHoy.Sum(i => i.Monto);
-
-            var gastosHoy = await _gastoService.GetGastosDelDia(usuarioId, fechaActual);
-           
-            var totalGastosHoy= gastosHoy.Sum(i => i.Monto);
-
-            
-
-
-
-
-            var categorias = await _categoriaService.GetCategorias();
-            var metodoPagos = await _metodoPagoService.GetMetodoPagos();
-
-
-            ViewBag.IngresosHoy = ingresoHoy;
-            ViewBag.TotalIngresosHoy = totalIngresosHoy;
-            ViewBag.GastosHoy = gastosHoy;
-            ViewBag.totalGastosHoy = totalGastosHoy;
-            ViewBag.Categorias = categorias;
-            ViewBag.MetodoPago = metodoPagos;
-            ViewBag.TotalHoy = totalIngresosHoy - totalGastosHoy;
-
-
-            TempData["Mensaje"] = "Producto agregado correctamente.";
+                // Obtener todos los métodos de pago
+                var metodosPago = await _metodoPagoService.GetMetodoPagos();
+                var metodosPagoViewModel = metodosPago.Select(m => new MetodoPagoViewModel
+                {
+                    Id = m.IdMetodoPago,
+                    Descripcion = m.Descripcion
+                }).ToList();
 
 
-            return View(productos);
+
+                // Mapeo de entidades a ViewModels para productos
+                var productosViewModel = productos.Select(p => new ProductoViewModel
+                {
+                    Id = p.IdProductos, // Asegúrate de que en tu entidad la propiedad se llame 'Id'
+                    Descripcion = p.Descripcion,
+                    CategoriaId = p.CategoriaId,
+                    CategoriaNombre = p.Categoria.Descripcion, // O mapea según corresponda
+                    PrecioCajon = p.PrecioCajon,
+                    PesoCajon = p.PesoCajon,
+                    MargenGanancia = p.MargenGanancia,
+                    PrecioCosto = p.PrecioCosto,
+                    PrecioFinal = p.PrecioFinal ?? 0m
+                }).ToList();
+
+                // Aquí deberás mapear también gastos y ventas si los necesitas en el dashboard:
+                var gastosViewModel = gastosHoy.Select(g => new GastoViewModel
+                {
+                    Id = g.IdGasto,  // Asegúrate de mapear la propiedad correcta, por ejemplo g.IdGasto o similar
+                    Fecha = g.Fecha,
+                    Concepto = g.Concepto,
+                    Monto = g.Monto
+                }).ToList();
+
+                var ventasViewModel = ventasHoy.Select(v => new VentaViewModel
+                {
+                    Id = v.IdDetalleVenta, // Mapea de acuerdo a tu entidad
+                    MetodoPagoId=v.MetodoPagoId,
+                    MetodoPagoNombre= v.MetodoPago.Descripcion,
+                    Concepto= v.Concepto,
+                    Monto= v.Monto,
+                    Fecha = v.Fecha
+                }).ToList();
+
+                // Crear y poblar el DashboardViewModel
+                var dashboardViewModel = new DashBoardViewModel
+                {
+                    TotalVentas = totalVentasHoy,
+                    TotalGastos = totalGastosHoy,
+                    CantidadProductos = productos.Count(),
+                    Productos = productosViewModel,
+                    GastosRecientes = gastosViewModel,
+                    VentasRecientes = ventasViewModel,
+                    Categorias = categoriasViewModel,  // Agregamos las categorías
+                    MetodosPago = metodosPagoViewModel
+                };
+
+                return View(dashboardViewModel);
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error", "Home", new { mensaje = ex.Message });
+            }
         }
 
 
-        [HttpPost]
 
+
+        [SessionAuthorize]
+        [HttpPost]
         public async Task<IActionResult> AgregarProducto(Producto producto)
         {
 
-            producto.UsuarioId = int.Parse(HttpContext.Session.GetString("UsuarioId"));
+            try
+            {
+                producto.UsuarioId = int.Parse(HttpContext.Session.GetString("UsuarioId"));
 
 
+                await _productoService.AgregarProducto(producto);
+
+                TempData["MensajeProductos"] = "Producto agregado correctamente.";
+                TempData["TipoMensajeProductos"] = "success";
+
+                return RedirectToAction("Index");
 
 
-            await _productoService.AgregarProducto(producto);
+            }
+            catch (Exception ex)
+            {
 
-            TempData["MensajeProductos"] = "Producto editado correctamente.";
-            TempData["TipoMensajeProductos"] = "success";
+                    TempData["MensajeProductos"] = ex.Message; // Opción para mostrar en la vista
+                    TempData["TipoMensajeProductos"] = "error";
+               
+                    return RedirectToAction("Index");
+            }
+            
 
-
-
-            return RedirectToAction("Index");
 
 
 
@@ -193,7 +259,7 @@ namespace MVC_GestionVerdu.Controllers
         
         }
 
-
+        [SessionAuthorize]
         [HttpGet]
         public async Task<IActionResult> DescargarPdfProductos()
         {

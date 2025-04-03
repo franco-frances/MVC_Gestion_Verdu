@@ -11,7 +11,7 @@ public partial class Producto
 
     public int CategoriaId { get; set; }
 
-    public int? UsuarioId { get; set; }
+    public int UsuarioId { get; set; }
 
     public decimal PrecioCajon { get; set; }
 

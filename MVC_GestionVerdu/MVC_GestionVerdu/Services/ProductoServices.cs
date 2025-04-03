@@ -30,14 +30,34 @@ namespace MVC_GestionVerdu.Services
         public async Task<Producto> GetProducto(int id)
         {
 
-           
-            return await _productoRepository.GetbyIdAsync(id);
+
+            var producto = await _productoRepository.GetbyIdAsync(id);
+
+            if (producto == null)
+            {
+                throw new KeyNotFoundException($"No se encontró un producto con el ID {id}.");
+            }
+
+            return producto;
 
 
         }
 
         public async Task AgregarProducto(Producto producto)
         {
+
+            if (string.IsNullOrWhiteSpace(producto.Descripcion))
+                throw new ArgumentException("La descripción es obligatoria.");
+
+
+
+            bool existe = await _productoRepository.ExistsAsync(producto.UsuarioId, producto.Descripcion);
+
+            if (existe)
+            {
+                throw new Exception("El producto ya existe.");
+            }
+
             await _productoRepository.AddAsync(producto);
         }
 

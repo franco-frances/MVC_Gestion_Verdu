@@ -1,4 +1,5 @@
-﻿using MVC_GestionVerdu.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using MVC_GestionVerdu.Models;
 
 namespace MVC_GestionVerdu.Repositories.Interfaces
 {
@@ -9,5 +10,6 @@ namespace MVC_GestionVerdu.Repositories.Interfaces
         Task<IEnumerable<Producto>> GetAllAsync(int usuarioId);
         Task<Producto> GetbyIdAsync(int id);
         Task UpdateAsync(Producto producto);
+        Task<bool> ExistsAsync(int usuarioId, string descripcion);
     }
 }
