@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MVC_GestionVerdu.Models.Gastos>
+﻿@model IEnumerable<MVC_GestionVerdu.ViewModels.GastoViewModel>
 
 <div class="container mt-4">
     <div class="card shadow">
@@ -18,20 +18,20 @@
                 <tbody>
                     @foreach (var gasto in Model)
                     {
-                        <tr id="fila-@gasto.IdGasto" class="gasto-row" data-id="@gasto.IdGasto">
+                        <tr id="fila-@gasto.Id" class="gasto-row" data-id="@gasto.Id">
                             <td class="fecha">@gasto.Fecha.ToString("yyyy-MM-dd")</td>
                             <td class="concepto">@gasto.Concepto</td>
                             <td class="monto">@gasto.Monto.ToString("C")</td>
                             <td>
                                 <button class="btn btn-sm btn-warning btnEditarGasto"
-                                        data-id="@gasto.IdGasto"
+                                        data-id="@gasto.Id"
                                         data-fecha="@gasto.Fecha.ToString("yyyy-MM-dd")"
                                         data-concepto="@gasto.Concepto"
                                         data-monto="@gasto.Monto">
                                     Editar
                                 </button>
                                 <a href="javascript:void(0);" class="btn btn-sm btn-danger"
-                                   onclick="confirmarEliminacion(@gasto.IdGasto, '/Gastos/Eliminar')">
+                                   onclick="confirmarEliminacion(@gasto.Id, '/Gastos/Eliminar')">
                                     Eliminar
                                 </a>
                             </td>

@@ -3,6 +3,7 @@ using MVC_GestionVerdu.Attributes;
 using MVC_GestionVerdu.Models;
 using MVC_GestionVerdu.Services;
 using MVC_GestionVerdu.Services.Interfaces;
+using MVC_GestionVerdu.ViewModels;
 
 namespace MVC_GestionVerdu.Controllers
 {
@@ -34,15 +35,38 @@ namespace MVC_GestionVerdu.Controllers
         [SessionAuthorize]
         public async Task<IActionResult> ListadoPaginado(string? metodoPago, DateTime? fechaInicio, DateTime? fechaFin, int pageNumber = 1, int pageSize = 10) {
 
-            int usuarioId = int.Parse(HttpContext.Session.GetString("UsuarioId"));
-            var (ventas, totalRegistros, totalMonto) = await _ventaService.GetVentasPaginadas(usuarioId, metodoPago, fechaInicio, fechaFin, pageNumber, pageSize);
 
-            ViewBag.TotalRegistros = totalRegistros;
-            ViewBag.PageNumber = pageNumber;
-            ViewBag.PageSize = pageSize;
-            ViewBag.TotalMonto = totalMonto;
+            try
+            {
+                int usuarioId = int.Parse(HttpContext.Session.GetString("UsuarioId"));
+                var (ventas, totalRegistros, totalMonto) = await _ventaService.GetVentasPaginadas(usuarioId, metodoPago, fechaInicio, fechaFin, pageNumber, pageSize);
 
-            return PartialView("_ListadoVentas", ventas);
+                // Mapear las entidades de Gasto a GastoViewModel
+                var VentasViewModel = ventas.Select(v => new VentaViewModel
+                {
+                    Id = v.IdDetalleVenta,      // Asegurate de mapear la propiedad correcta
+                    Fecha = v.Fecha,
+                    Concepto = v.Concepto,
+                    Monto = v.Monto,
+                    MetodoPagoNombre=v.MetodoPago.Descripcion
+                
+                }).ToList();
+
+
+                ViewBag.TotalRegistros = totalRegistros;
+                ViewBag.PageNumber = pageNumber;
+                ViewBag.PageSize = pageSize;
+                ViewBag.TotalMonto = totalMonto;
+
+                return PartialView("_ListadoVentas", VentasViewModel);
+
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error", "Home", new { mensaje = ex.Message });
+
+            }
+
 
         }
 
@@ -69,38 +93,48 @@ namespace MVC_GestionVerdu.Controllers
 
         [SessionAuthorize]
         [HttpPost]
-        public async Task<IActionResult> AgregarVenta(DetallesVenta venta, string origen)
+        public async Task<IActionResult> AgregarVenta(VentaViewModel model)
         {
 
-            if (origen == "ingresosRapidos") {
 
-                venta.Concepto = "Varios";
-            
+
+            try
+            {
+                
+
+                int UsuarioId = int.Parse(HttpContext.Session.GetString("UsuarioId"));
+
+
+                var venta = new DetallesVenta { 
+                
+                    UsuarioId=UsuarioId,
+                    Concepto=model.Concepto,
+                    Fecha=model.Fecha,
+                    Monto=model.Monto,
+                    MetodoPagoId= model.MetodoPagoId
+                
+                
+                };
+
+
+
+
+                await _ventaService.AgregarVenta(venta);
+
+                
+
+                TempData["MensajeIngresos"] = "Ingreso agregado correctamente.";
+                TempData["TipoMensajeIngresos"] = "success"; // Para SweetAlert
+
+
+                return RedirectToAction("Index");
             }
-
-            venta.UsuarioId = int.Parse(HttpContext.Session.GetString("UsuarioId"));
-
-
-
-
-            await _ventaService.AgregarVenta(venta);
-
-            if (origen == "ingresosRapidos")
+            catch (Exception ex)
             {
 
-                return RedirectToAction("Index","DashBoard");
-
+                return RedirectToAction("Error", "Home", new { mensaje = ex.Message });
 
             }
-
-
-            TempData["MensajeIngresos"] = "Ingreso agregado correctamente.";
-            TempData["TipoMensajeIngresos"] = "success"; // Para SweetAlert
-
-
-            return RedirectToAction("Index");
-
-
 
 
 
@@ -126,10 +160,10 @@ namespace MVC_GestionVerdu.Controllers
         [SessionAuthorize]
         [HttpPost]
 
-        public async Task<IActionResult> Editar(DetallesVenta venta) {
+        public async Task<IActionResult> Editar(VentaViewModel model) {
 
 
-            var ventaEditada = await _ventaService.GetVentasById(venta.IdDetalleVenta);
+            var ventaEditada = await _ventaService.GetVentasById(model.Id);
 
             if (ventaEditada == null)
             {
@@ -141,10 +175,10 @@ namespace MVC_GestionVerdu.Controllers
 
             try
             {
-                ventaEditada.MetodoPagoId = venta.MetodoPagoId;
-                ventaEditada.Concepto= venta.Concepto;
-                ventaEditada.Fecha= venta.Fecha;
-                ventaEditada.Monto= venta.Monto;
+                ventaEditada.MetodoPagoId = model.MetodoPagoId;
+                ventaEditada.Concepto= model.Concepto;
+                ventaEditada.Fecha= model.Fecha;
+                ventaEditada.Monto= model.Monto;
 
 
 
@@ -157,19 +191,17 @@ namespace MVC_GestionVerdu.Controllers
                 TempData["TipoMensajeIngresos"] = "success";
 
 
+                return RedirectToAction("Index");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                TempData["MensajeIngresos"] = "El Ingreso no existe.";
-                TempData["TipoMensajeIngresos"] = "error";
+                return RedirectToAction("Error", "Home", new { mensaje = ex.Message });
 
-                return RedirectToAction("Index");
             }
 
 
-                return RedirectToAction("Index");
 
-        
+
         }
 
 

@@ -17,5 +17,6 @@ namespace MVC_GestionVerdu.ViewModels
         [Range(0.01, double.MaxValue, ErrorMessage = "El monto debe ser mayor a 0")]
         public decimal Monto { get; set; }
 
+      
     }
 }

@@ -35,6 +35,7 @@ namespace MVC_GestionVerdu.Controllers
         {
             try
             {
+
                 // Recupera datos necesarios
                 int usuarioId = int.Parse(HttpContext.Session.GetString("UsuarioId"));
                 var fechaActual = DateTime.Today;
@@ -45,6 +46,7 @@ namespace MVC_GestionVerdu.Controllers
                 // Ventas y gastos del día
                 var ventasHoy = await _ventaService.GetVentasDelDia(usuarioId, fechaActual);
                 var gastosHoy = await _gastoService.GetGastosDelDia(usuarioId, fechaActual);
+                
 
                 // Calcular totales
                 var totalVentasHoy = ventasHoy.Sum(v => v.Monto);
@@ -127,13 +129,33 @@ namespace MVC_GestionVerdu.Controllers
 
         [SessionAuthorize]
         [HttpPost]
-        public async Task<IActionResult> AgregarProducto(Producto producto)
+        public async Task<IActionResult> AgregarProducto(ProductoViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                TempData["MensajeProductos"] = "Hay errores en los datos ingresados.";
+                TempData["TipoMensajeProductos"] = "error";
+                return RedirectToAction("Index");
+            }
 
             try
             {
-                producto.UsuarioId = int.Parse(HttpContext.Session.GetString("UsuarioId"));
+                int usuarioId = int.Parse(HttpContext.Session.GetString("UsuarioId"));
 
+                // Mapear el ViewModel al modelo de dominio Producto
+                var producto = new Producto
+                {
+                    // Si es un producto nuevo, normalmente IdProductos será 0 o se asignará automáticamente
+                    
+                    Descripcion = model.Descripcion,
+                    CategoriaId = model.CategoriaId,
+                    PrecioCajon = model.PrecioCajon,
+                    PesoCajon = model.PesoCajon,
+                    MargenGanancia = model.MargenGanancia,
+                    PrecioCosto = model.PrecioCosto,
+                    PrecioFinal = model.PrecioFinal,
+                    UsuarioId = usuarioId
+                };
 
                 await _productoService.AgregarProducto(producto);
 
@@ -141,22 +163,13 @@ namespace MVC_GestionVerdu.Controllers
                 TempData["TipoMensajeProductos"] = "success";
 
                 return RedirectToAction("Index");
-
-
             }
             catch (Exception ex)
             {
-
-                    TempData["MensajeProductos"] = ex.Message; // Opción para mostrar en la vista
-                    TempData["TipoMensajeProductos"] = "error";
-               
-                    return RedirectToAction("Index");
+                TempData["MensajeProductos"] = ex.Message;
+                TempData["TipoMensajeProductos"] = "error";
+                return RedirectToAction("Index");
             }
-            
-
-
-
-
         }
 
 
@@ -184,10 +197,19 @@ namespace MVC_GestionVerdu.Controllers
 
         [HttpPost]
 
-        public async Task<IActionResult> Editar(Producto producto) {
+        public async Task<IActionResult> Editar(ProductoViewModel model) {
 
 
-            var produEditado = await _productoService.GetProducto(producto.IdProductos);
+            if (!ModelState.IsValid)
+            {
+                TempData["MensajeProductos"] = "Hay errores en los datos ingresados.";
+                TempData["TipoMensajeProductos"] = "error";
+                return RedirectToAction("Index");
+            }
+
+
+
+            var produEditado = await _productoService.GetProducto(model.Id);
 
 
             if (produEditado == null)
@@ -200,18 +222,16 @@ namespace MVC_GestionVerdu.Controllers
             try
             {
 
-                produEditado.Descripcion= producto.Descripcion;
-                produEditado.CategoriaId= producto.CategoriaId;
-                produEditado.PrecioCajon= producto.PrecioCajon;
-                produEditado.PesoCajon= producto.PesoCajon;
-                produEditado.MargenGanancia= producto.MargenGanancia;
-                produEditado.PrecioCosto= producto.PrecioCosto;
-                produEditado.PrecioFinal= producto.PrecioFinal;
+                produEditado.Descripcion= model.Descripcion;
+                produEditado.CategoriaId= model.CategoriaId;
+                produEditado.PrecioCajon= model.PrecioCajon;
+                produEditado.PesoCajon= model.PesoCajon;
+                produEditado.MargenGanancia= model.MargenGanancia;
+                produEditado.PrecioCosto= model.PrecioCosto;
+                produEditado.PrecioFinal= model.PrecioFinal;
             
             
-                //pasa las categorias para que sean cargadas en select
-                ViewBag.Categorias = await _categoriaService.GetCategorias();
-
+               
 
 
                 await _productoService.EditarProducto(produEditado);
@@ -258,6 +278,123 @@ namespace MVC_GestionVerdu.Controllers
         
         
         }
+
+        [SessionAuthorize]
+        [HttpPost]
+        public async Task<IActionResult> AgregarVentaRapida([Bind(Prefix = "VentaRapida")] VentaViewModel model, string origen)
+        {
+
+            
+                model.Concepto = "Varios";
+                model.Fecha = DateTime.Today;
+            
+
+            try
+            {
+
+
+                int UsuarioId = int.Parse(HttpContext.Session.GetString("UsuarioId"));
+
+
+                var venta = new DetallesVenta
+                {
+
+                    UsuarioId = UsuarioId,
+                    Concepto = model.Concepto,
+                    Fecha = model.Fecha,
+                    Monto = model.Monto,
+                    MetodoPagoId = model.MetodoPagoId
+
+
+                };
+
+
+
+                await _ventaService.AgregarVenta(venta);
+
+                // Ventas y gastos del día
+                var ventasHoy = await _ventaService.GetVentasDelDia(UsuarioId, model.Fecha);
+                var gastosHoy = await _gastoService.GetGastosDelDia(UsuarioId, model.Fecha);
+
+
+                // Calcular totales
+                var totalVentasHoy = ventasHoy.Sum(v => v.Monto);
+                var totalGastosHoy = gastosHoy.Sum(g => g.Monto);
+
+
+                var BalanceHoy = totalVentasHoy - totalGastosHoy;
+
+                return Json(new
+                {
+                    exito = true,
+                    fecha = venta.Fecha.ToString("yyyy-MM-dd"),
+                    concepto = venta.Concepto,
+                    monto = venta.Monto,
+                    montoFormateado = venta.Monto.ToString("C"),
+                    totalFormateado = totalVentasHoy.ToString("C"),
+                    balanceHoyFormateado = BalanceHoy.ToString("C")
+                });
+            }
+            catch (Exception ex)
+            {
+
+                return Json(new { exito = false, mensaje = ex.Message });
+
+            }
+
+
+        }
+
+
+        [SessionAuthorize]
+        [HttpPost]
+        public async Task<IActionResult> AgregarGastoRapido([Bind(Prefix = "GastoRapido")] GastoViewModel model, string origen)
+        {
+            model.Fecha = DateTime.Today;
+
+            try
+            {
+                int usuarioId = int.Parse(HttpContext.Session.GetString("UsuarioId"));
+
+                var gasto = new Gastos
+                {
+                    Concepto = model.Concepto,
+                    Fecha = model.Fecha,
+                    Monto = model.Monto,
+                    UsuarioId = usuarioId
+                };
+
+                await _gastoService.AgregarGasto(gasto);
+
+                // Obtener ventas y gastos del día
+                var ventasHoy = await _ventaService.GetVentasDelDia(usuarioId, model.Fecha);
+                var gastosHoy = await _gastoService.GetGastosDelDia(usuarioId, model.Fecha);
+
+                var totalVentasHoy = ventasHoy.Sum(v => v.Monto);
+                var totalGastosHoy = gastosHoy.Sum(g => g.Monto);
+                var balanceHoy = totalVentasHoy - totalGastosHoy;
+
+                return Json(new
+                {
+                    exito = true,
+                    fecha = gasto.Fecha.ToString("yyyy-MM-dd"),
+                    concepto = gasto.Concepto,
+                    monto = gasto.Monto,
+                    montoFormateado = gasto.Monto.ToString("C"),
+                    totalFormateado = totalGastosHoy.ToString("C"),
+                    balanceHoyFormateado = balanceHoy.ToString("C")
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { exito = false, mensaje = ex.Message });
+            }
+        }
+
+
+
+
+
 
         [SessionAuthorize]
         [HttpGet]

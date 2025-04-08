@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MVC_GestionVerdu.Models.Gastos>
+﻿@model MVC_GestionVerdu.ViewModels.GastoViewModel
 
 <h1>Gastos</h1>
 <div class="row mb-3 align-items-end">
@@ -34,7 +34,7 @@
 
 
 
-@await Html.PartialAsync("_ModalGasto", Model)
+@await Html.PartialAsync("_ModalGasto")
 
 
 

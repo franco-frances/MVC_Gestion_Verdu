@@ -5,7 +5,7 @@
         $("#formProducto").attr("action", "/Dashboard/AgregarProducto");
 
         //limpia modal en caso de haber sido usado para editar
-        $("#IdProducto").val("");
+        $("#Id").val("");
         $("#Descripcion").val("");
         $("#CategoriaId").val("");
         $("#PrecioCajon").val("");
@@ -14,6 +14,7 @@
         $("#PrecioCosto").val("");
         $("#PrecioFinal").val("");
 
+       
         $("#modalProducto").modal("show");
 
     });
@@ -50,26 +51,15 @@
         $("#PrecioFinal").val(preciofinal);
 
 
-
+      
         // Mostrar el modal
         $("#modalProducto").modal("show");
+
 
     });
 
 
-    //// Mostrar SweetAlert después de la recarga si hay un mensaje en TempData
-    //var mensaje = $("#tempMensaje").val();
-    //var tipoMensaje = $("#tempTipoMensaje").val();
-
-    //if (mensaje && mensaje.trim() !== "") {
-    //    Swal.fire({
-    //        icon: tipoMensaje || "info", // Si no hay tipo de mensaje, usa "info" por defecto
-    //        title: "¡Éxito!",
-    //        text: mensaje,
-    //        timer: 2000,
-    //        showConfirmButton: false
-    //    });
-    //}
+ 
 
 
 });

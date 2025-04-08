@@ -1,4 +1,7 @@
-﻿@{
+﻿@model MVC_GestionVerdu.Models.Register
+
+
+@{
     ViewData["Title"] = "Registro";
 }
 
@@ -22,20 +25,28 @@
 
         <form method="post" action="@Url.Action("Register", "Auth")">
             <div class="mb-3">
-                <label for="nickname" class="form-label">Nombre de usuario</label>
-                <input type="text" class="form-control" id="nickname" name="nickname" value="@Model?.NickName" required>
+                <label asp-for="NickName" class="form-label">Nombre de usuario</label>
+                <input asp-for="NickName" type="text" class="form-control" id="nickname" value="@Model?.NickName" required>
+                <span asp-validation-for="NickName" class="invalid-feedback"></span>
+
             </div>
             <div class="mb-3">
-                <label for="email" class="form-label">Correo Electrónico</label>
-                <input type="email" class="form-control" id="email" name="email" value="@Model?.Email" required>
+                <label asp-for="Email" class="form-label">Correo Electrónico</label>
+                <input asp-for="Email" type="email" class="form-control" id="email"  value="@Model?.Email" required>
+                <span asp-validation-for="Email" class="invalid-feedback"></span>
+
             </div>
             <div class="mb-3">
-                <label for="password" class="form-label">Contraseña</label>
-                <input type="password" class="form-control" id="password" name="password" required>
+                <label asp-for="Password" class="form-label">Contraseña</label>
+                <input asp-for="Password" type="password" class="form-control" id="password"  required>
+                <span asp-validation-for="Password" class="invalid-feedback"></span>
+
             </div>
             <div class="mb-3">
-                <label for="confirmPassword" class="form-label">Confirmar Contraseña</label>
-                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                <label asp-for="ConfirmPassword" class="form-label">Confirmar Contraseña</label>
+                <input asp-for="ConfirmPassword" type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                <span asp-validation-for="ConfirmPassword" class="invalid-feedback"></span>
+
             </div>
             <button type="submit" class="btn btn-success w-100">Registrarse</button>
         </form>

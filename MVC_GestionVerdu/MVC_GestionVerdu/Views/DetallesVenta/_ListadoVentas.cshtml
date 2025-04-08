@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MVC_GestionVerdu.Models.DetallesVenta>
+﻿@model IEnumerable<MVC_GestionVerdu.ViewModels.VentaViewModel>
 
 
 <div class="container mt-4">
@@ -21,21 +21,21 @@
                     @foreach (var ingreso in Model)
 
                     {
-                        <tr id="fila-@ingreso.IdDetalleVenta" class="ingreso-row">
+                        <tr id="fila-@ingreso.Id" class="ingreso-row">
                             <td class="fecha">@ingreso.Fecha.ToString("yyyy-MM-dd")</td>
-                            <td class="metodo-pago">@ingreso.MetodoPago.Descripcion</td>
+                            <td class="metodo-pago">@ingreso.MetodoPagoNombre</td>
                             <td>@ingreso.Concepto</td>
                             <td class="monto">@ingreso.Monto.ToString("C")</td>
                             <td>
                                 <button class="btn btn-sm btn-warning btnEditarIngreso"
-                                        data-id="@ingreso.IdDetalleVenta"
+                                        data-id="@ingreso.Id"
                                         data-fecha="@ingreso.Fecha.ToString("yyyy-MM-dd")"
-                                        data-metodopagoid="@ingreso.MetodoPago.IdMetodoPago"
+                                        data-metodopagoid="@ingreso.MetodoPagoNombre"
                                         data-concepto="@ingreso.Concepto"
                                         data-monto="@ingreso.Monto">
                                     Editar
                                 </button>
-                                <a href="javascript:void(0);" class="btn btn-sm btn-danger" onclick="confirmarEliminacion(@ingreso.IdDetalleVenta, '/DetallesVenta/Eliminar')">Eliminar</a>
+                                <a href="javascript:void(0);" class="btn btn-sm btn-danger" onclick="confirmarEliminacion(@ingreso.Id, '/DetallesVenta/Eliminar')">Eliminar</a>
                             </td>
                         </tr>
                     }

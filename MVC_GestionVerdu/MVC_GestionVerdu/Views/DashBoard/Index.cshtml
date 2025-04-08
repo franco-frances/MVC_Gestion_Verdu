@@ -19,7 +19,7 @@
                     <div class="card-custom">
                         <div class="card-body">
                             <h3 class="card-title">Total Hoy</h3>
-                            <p class="card-text">@Model.Balance.ToString("C")</p>
+                            <p class="card-text" id="totalHoy">@Model.Balance.ToString("C")</p>
                         </div>
                     </div>
                 </div>
@@ -27,7 +27,7 @@
                     <div class="card-custom ingresos">
                         <div class="card-body">
                             <h3 class="card-title">Total Ingresos</h3>
-                            <p class="card-text">@Model.TotalVentas.ToString("C")</p>
+                            <p class="card-text" id="totalIngresosHoyCard">@Model.TotalVentas.ToString("C")</p>
                         </div>
                     </div>
                 </div>
@@ -35,7 +35,7 @@
                     <div class="card-custom gastos">
                         <div class="card-body">
                             <h3 class="card-title">Total Gastos</h3>
-                            <p class="card-text">@Model.TotalGastos.ToString("C")</p>
+                            <p class="card-text" id="totalGastosHoyCard">@Model.TotalGastos.ToString("C")</p>
                         </div>
                     </div>
                 </div>
@@ -143,18 +143,23 @@
                         </h6>
                         <span id="totalIngresosHoy" class="fs-6 fw-semibold">@Model.TotalVentas.ToString("C")</span>
                     </div>
-                    <form asp-controller="DetallesVenta" asp-action="AgregarVenta" method="post" class="row g-3 align-items-center justify-content-center mt-3 mb-2">
+                    <form id="formIngresoRapido" method="post" class="row g-3 align-items-center justify-content-center mt-3 mb-2">
                         <div class="col-md-3">
-                            <select name="MetodoPagoId" class="form-select rounded-pill" required>
+                            <select asp-for="VentaRapida.MetodoPagoId" class="form-select rounded-pill">
                                 <option value="">Seleccionar</option>
                                 @foreach (var metodo in Model.MetodosPago)
                                 {
                                     <option value="@metodo.Id">@metodo.Descripcion</option>
                                 }
                             </select>
+                            
+                            <span asp-validation-for="VentaRapida.MetodoPagoId" class="invalid-feedback"></span>
+
                         </div>
                         <div class="col-md-3">
-                            <input type="number" name="Monto" class="form-control rounded-pill" placeholder="Monto" required>
+                            <input type="number" asp-for="VentaRapida.Monto" class="form-control rounded-pill" placeholder="Monto" >
+                            <span asp-validation-for="VentaRapida.Monto" class="invalid-feedback"></span>
+
                         </div>
                         <input type="hidden" name="Fecha" value="@DateTime.Now.ToString("yyyy-MM-dd")">
                         <input type="hidden" name="origen" value="ingresosRapidos">
@@ -200,15 +205,19 @@
                         <span id="totalGastosHoy" class="fs-6 fw-semibold">@Model.TotalGastos.ToString("C")</span>
                     </div>
 
-                    <form asp-controller="Gastos" asp-action="AgregarGasto" method="post" class="row g-3 align-items-center justify-content-center mt-3 mb-2">
+                    <form id="formGastoRapido" method="post" class="row g-3 align-items-center justify-content-center mt-3 mb-2">
                         <div class="col-md-4">
-                            <input type="text" name="Concepto" class="form-control rounded-pill" placeholder="Concepto" required>
+                            <input type="text" asp-for=GastoRapido.Concepto  class="form-control rounded-pill" placeholder="Concepto" >
+                            <span asp-validation-for="GastoRapido.Concepto" class="invalid-feedback"></span>
+
+
                         </div>
                         <div class="col-md-3">
-                            <input type="number" name="Monto" class="form-control rounded-pill" placeholder="Monto" required>
+                            <input type="number" asp-for="GastoRapido.Monto" class="form-control rounded-pill" placeholder="Monto">
+                            <span asp-validation-for="GastoRapido.Monto" class="invalid-feedback"></span>
+                            
                         </div>
-                        <input type="hidden" name="Fecha" value="@DateTime.Now.ToString("yyyy-MM-dd")">
-                        <input type="hidden" name="origen" value="gastosRapidos">
+                                                
                         <div class="col-md-3">
                             <button type="submit" class="btn btn-danger w-100 rounded-pill">Agregar Gasto</button>
                         </div>
@@ -218,12 +227,29 @@
         </main>
     </div>
 </div>
+<!-- Toasts -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="toastConfirmacion" class="toast align-items-center text-white bg-success border-0 shadow" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                Acción realizada con éxito.
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
 
-@await Html.PartialAsync("_ModalProducto", Model)
+
+@await Html.PartialAsync("_ModalProducto", new MVC_GestionVerdu.ViewModels.ProductoViewModel()
+{
+Categorias = Model.Categorias
+})
 
 
 @section Scripts {
     <script src="~/js/Productos.js" asp-append-version="true"></script>
+    <script src="~/js/DashBoard.js" asp-append-version="true"></script>
 
+       
 }
 

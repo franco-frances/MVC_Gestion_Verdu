@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MVC_GestionVerdu.Models.DetallesVenta>
+﻿@model MVC_GestionVerdu.ViewModels.VentaViewModel
 
 <!-- Modal para Agregar/Editar Ingresos -->
 <div class="modal fade" id="modalIngreso" tabindex="-1" aria-labelledby="modalIngresoLabel" aria-hidden="true">
@@ -11,32 +11,39 @@
             <div class="modal-body">
                 <form id="formIngreso" method="post">
                     <!-- Campo oculto para el ID (usado al editar) -->
-                    <input type="hidden" id="IdDetalleVenta" name="IdDetalleVenta" />
+                    <input asp-for="Id" type="hidden" id="IdDetalleVenta"  />
 
                     <div class="mb-3">
-                        <label for="Fecha" class="form-label fw-bold">Fecha:</label>
-                        <input type="date" class="form-control" id="Fecha" name="Fecha" required>
+                        <label asp-for="Fecha" class="form-label fw-bold">Fecha:</label>
+                        <input asp-for=Fecha type="date" class="form-control" id="Fecha" name="Fecha" required>
+                        <span asp-validation-for="Fecha" class="invalid-feedback"></span>
                     </div>
 
                     <div class="mb-3">
-                        <label for="MetodoPagoId" class="form-label fw-bold">Método de Pago:</label>
-                        <select class="form-select" id="MetodoPagoId" name="MetodoPagoId" required>
+                        <label asp-for="MetodoPagoId" class="form-label fw-bold">Método de Pago:</label>
+                        <select asp-for="MetodoPagoId" class="form-select" id="MetodoPagoId"  required>
                             <option value="">Seleccionar</option>
                             @foreach (var metodo in ViewBag.MetodoPago)
                             {
                                 <option value="@metodo.IdMetodoPago">@metodo.Descripcion</option>
                             }
                         </select>
+                        <span asp-validation-for="MetodoPagoId" class="invalid-feedback"></span>
+
                     </div>
 
                     <div class="mb-3">
-                        <label for="Concepto" class="form-label fw-bold">Concepto:</label>
-                        <input type="text" class="form-control" id="Concepto" name="Concepto" placeholder="Descripción del ingreso" required>
+                        <label asp-for="Concepto" class="form-label fw-bold">Concepto:</label>
+                        <input asp-for="Concepto" type="text" class="form-control" id="Concepto" placeholder="Descripción del ingreso" required>
+                        <span asp-validation-for="Concepto" class="invalid-feedback"></span>
+
                     </div>
 
                     <div class="mb-3">
-                        <label for="Monto" class="form-label fw-bold">Monto:</label>
-                        <input type="number" class="form-control" id="Monto" name="Monto" step="0.01" placeholder="Ingrese el monto" required>
+                        <label asp-for="Monto" class="form-label fw-bold">Monto:</label>
+                        <input asp-for="Monto" type="number" class="form-control" id="Monto" placeholder="Ingrese el monto" required>
+                        <span asp-validation-for="Monto" class="invalid-feedback"></span>
+
                     </div>
                 </form>
             </div>

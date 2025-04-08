@@ -1,33 +1,36 @@
-﻿@model IEnumerable<MVC_GestionVerdu.Models.Gastos>
-
+﻿@model MVC_GestionVerdu.ViewModels.GastoViewModel
 
 <!-- Modal para Agregar/Editar Gastos -->
 <div class="modal fade" id="modalAgregarGasto" tabindex="-1" aria-labelledby="modalAgregarGastoLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-dark text-white">
-                <!--  título dinámico -->
                 <h5 class="modal-title" id="modalTituloGasto">Agregar Gasto</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="formGasto" method="post">
-                    <!-- Campo oculto para el ID del gasto -->
-                    <input type="hidden" id="idGasto" name="IdGasto">
+                <form id="formGasto" method="post" asp-action="AgregarGasto">
+                    <!-- Campo oculto para el ID -->
+                    <input type="hidden" asp-for="Id" id="idGasto" />
 
                     <div class="mb-3">
-                        <label for="fecha" class="form-label">Fecha:</label>
-                        <!-- NOTA: El input de tipo "date" requiere el formato yyyy-MM-dd -->
-                        <input type="date" class="form-control" id="fecha" name="Fecha" value="@DateTime.Now.ToString("yyyy-MM-dd")" required>
+                        <label asp-for="Fecha" class="form-label"></label>
+                        <input asp-for="Fecha" type="date" class="form-control" id="fecha" />
+                        <span asp-validation-for="Fecha" class="invalid-feedback"></span>
                     </div>
+
                     <div class="mb-3">
-                        <label for="concepto" class="form-label">Concepto:</label>
-                        <input type="text" class="form-control" id="concepto" name="Concepto" required>
+                        <label asp-for="Concepto" class="form-label"></label>
+                        <input asp-for="Concepto" class="form-control" id="concepto" />
+                        <span asp-validation-for="Concepto" class="invalid-feedback"></span>
                     </div>
+
                     <div class="mb-3">
-                        <label for="monto" class="form-label">Monto:</label>
-                        <input type="number" step="0.01" class="form-control" id="monto" name="Monto" required>
+                        <label asp-for="Monto" class="form-label"></label>
+                        <input asp-for="Monto" class="form-control" id="monto" step="0.01" />
+                        <span asp-validation-for="Monto" class="invalid-feedback"></span>
                     </div>
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                         <button type="submit" class="btn btn-primary">Guardar</button>
@@ -37,7 +40,6 @@
         </div>
     </div>
 </div>
-
 
 <input type="hidden" id="tempMensaje" value="@TempData["MensajeGastos"]" />
 <input type="hidden" id="tempTipoMensaje" value="@TempData["TipoMensajeGastos"]" />

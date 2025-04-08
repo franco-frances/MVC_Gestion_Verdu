@@ -1,4 +1,4 @@
-﻿@model MVC_GestionVerdu.ViewModels.DashBoardViewModel
+﻿@model MVC_GestionVerdu.ViewModels.ProductoViewModel
 
 <!-- Modal para agregar y editar productos -->
 <div class="modal fade" id="modalProducto" tabindex="-1" aria-labelledby="modalProductoLabel" aria-hidden="true">
@@ -9,51 +9,54 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="formProducto" method="post">
-
-                    <input type="hidden" id="IdProducto" name="IdProductos" />
-
+                <form id="formProducto" method="post" asp-action="AgregarProducto">
+                    <!-- Input oculto para Id -->
+                    <input type="hidden" asp-for="Id" id="IdProducto" />
 
                     <div class="mb-3">
-                        <label for="Descripcion" class="form-label">Nombre</label>
-                        <input type="text" id="Descripcion" name="Descripcion" class="form-control" required>
+                        <label asp-for="Descripcion" class="form-label"></label>
+                        <input asp-for="Descripcion" class="form-control" id="Descripcion" />
+                        <span asp-validation-for="Descripcion" class="invalid-feedback"></span>
                     </div>
 
                     <div class="mb-3">
-                        <label for="CategoriaId" class="form-label">Categoría</label>
-                        <select id="CategoriaId" name="CategoriaId" class="form-select" required>
+                        <label asp-for="CategoriaId" class="form-label"></label>
+                        <select asp-for="CategoriaId" class="form-select" id="CategoriaId"
+                                asp-items="@(new SelectList(Model.Categorias, "Id", "Descripcion"))">
                             <option value="">Seleccione una categoría</option>
-                            @foreach (var categoria in Model.Categorias)
-                            {
-                                <option value="@categoria.Id">@categoria.Descripcion</option>
-                            }
                         </select>
+                        <span asp-validation-for="CategoriaId" class="invalid-feedback"></span>
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="PrecioCajon" class="form-label">Precio del Cajón ($)</label>
-                            <input type="number" id="PrecioCajon" name="PrecioCajon" class="form-control" required>
+                            <label asp-for="PrecioCajon" class="form-label"></label>
+                            <input asp-for="PrecioCajon" class="form-control" id="PrecioCajon" />
+                            <span asp-validation-for="PrecioCajon" class="invalid-feedback"></span>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="PesoCajon" class="form-label">Peso del Cajón (kg)</label>
-                            <input type="number" id="PesoCajon" name="PesoCajon" class="form-control" required>
+                            <label asp-for="PesoCajon" class="form-label"></label>
+                            <input asp-for="PesoCajon" class="form-control" id="PesoCajon" />
+                            <span asp-validation-for="PesoCajon" class="invalid-feedback"></span>
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="MargenGanancia" class="form-label">Porcentaje de Ganancia (%)</label>
-                        <input type="number" id="MargenGanancia" name="MargenGanancia" class="form-control" required>
+                        <label asp-for="MargenGanancia" class="form-label"></label>
+                        <input asp-for="MargenGanancia" class="form-control" id="MargenGanancia" />
+                        <span asp-validation-for="MargenGanancia" class="invalid-feedback"></span>
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label for="PrecioCosto" class="form-label">Precio Costo x Kg ($)</label>
-                            <input type="number" id="PrecioCosto" name="PrecioCosto" class="form-control" style="background-color: #e7f1ff; border: 2px solid #007bff;" readonly>
+                            <label asp-for="PrecioCosto" class="form-label"></label>
+                            <input asp-for="PrecioCosto" class="form-control no-validate" id="PrecioCosto" readonly
+                                   style="background-color: #e7f1ff; border: 2px solid #007bff;" />
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label for="PrecioFinal" class="form-label">Precio Final ($)</label>
-                            <input type="number" id="PrecioFinal" name="PrecioFinal" class="form-control" style="background-color: #e7f1ff; border: 2px solid #007bff;" readonly>
+                            <label asp-for="PrecioFinal" class="form-label"></label>
+                            <input asp-for="PrecioFinal" class="form-control no-validate" id="PrecioFinal" readonly
+                                   style="background-color: #e7f1ff; border: 2px solid #007bff;" />
                         </div>
                     </div>
 
@@ -66,7 +69,6 @@
         </div>
     </div>
 </div>
-
 
 <input type="hidden" id="tempMensaje" value="@TempData["MensajeProductos"]" />
 <input type="hidden" id="tempTipoMensaje" value="@TempData["TipoMensajeProductos"]" />

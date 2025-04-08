@@ -23,5 +23,7 @@ namespace MVC_GestionVerdu.ViewModels
         [Required(ErrorMessage = "El monto es obligatorio.")]
         [Range(0.01, double.MaxValue, ErrorMessage = "El monto debe ser mayor a 0.")]
         public decimal Monto { get; set; }
+
+         public List<MetodoPagoViewModel> Metodo { get; set; } = new List<MetodoPagoViewModel>();
     }
 }

@@ -35,5 +35,8 @@ namespace MVC_GestionVerdu.ViewModels
         [Range(0, double.MaxValue, ErrorMessage = "El precio final debe ser un valor positivo")]
         public decimal PrecioFinal { get; set; }
 
+        // Propiedad para cargar las categorías en el select
+        public List<CategoriaViewModel> Categorias{ get; set; } = new List<CategoriaViewModel>();
+
     }
 }

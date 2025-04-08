@@ -2,6 +2,7 @@
 using MVC_GestionVerdu.Attributes;
 using MVC_GestionVerdu.Models;
 using MVC_GestionVerdu.Services.Interfaces;
+using MVC_GestionVerdu.ViewModels;
 
 namespace MVC_GestionVerdu.Controllers
 {
@@ -19,18 +20,46 @@ namespace MVC_GestionVerdu.Controllers
         [SessionAuthorize]
         public async Task<IActionResult> ListadoPaginado(DateTime? fechaInicio, DateTime? fechaFin, int pageNumber = 1, int pageSize = 10)
         {
-            int usuarioId = int.Parse(HttpContext.Session.GetString("UsuarioId"));
-            var (gastos, totalRegistros, totalMonto) = await _gastoService.GetGastosPaginados(usuarioId, fechaInicio, fechaFin, pageNumber, pageSize);
+            try
+            {
+                int usuarioId = int.Parse(HttpContext.Session.GetString("UsuarioId"));
+            
+            
+                var (gastos, totalRegistros, totalMonto) = await _gastoService.GetGastosPaginados(usuarioId, fechaInicio, fechaFin, pageNumber, pageSize);
 
-            // Si deseas devolver un PartialView:
-            ViewBag.TotalRegistros = totalRegistros;
-            ViewBag.PageNumber = pageNumber;
-            ViewBag.PageSize = pageSize;
-            ViewBag.TotalMonto = totalMonto;
-            return PartialView("_ListadoGastos", gastos);
 
-            // O bien, devolver JSON:
-            // return Json(new { gastos, totalRegistros });
+                // Mapear las entidades de Gasto a GastoViewModel
+                var gastosViewModel = gastos.Select(g => new GastoViewModel
+                {
+                    Id = g.IdGasto,      // Asegurate de mapear la propiedad correcta
+                    Fecha = g.Fecha,
+                    Concepto = g.Concepto,
+                    Monto = g.Monto
+                }).ToList();
+
+
+
+
+
+                // Si deseas devolver un PartialView:
+                ViewBag.TotalRegistros = totalRegistros;
+                ViewBag.PageNumber = pageNumber;
+                ViewBag.PageSize = pageSize;
+                ViewBag.TotalMonto = totalMonto;
+                
+                return PartialView("_ListadoGastos", gastosViewModel);
+
+                // O bien, devolver JSON:
+                // return Json(new { gastos, totalRegistros });
+
+            }
+            catch (Exception ex)
+            {
+
+                return RedirectToAction("Error", "Home", new { mensaje = ex.Message });
+            }
+            
+            
         }
 
 
@@ -47,46 +76,62 @@ namespace MVC_GestionVerdu.Controllers
         }
 
 
-        public IActionResult AgregarGasto()
-        {
-            var model = new Gastos
-            {
-                Fecha = DateTime.Today // Asigna la fecha de hoy
-            };
-            return View(model);
-
-        }
+      
         
         [SessionAuthorize]
         [HttpPost]
-        public async Task<IActionResult> AgregarGasto(Gastos gasto, string origen)
+        public async Task<IActionResult> AgregarGasto(GastoViewModel model)
         {
 
-            if (origen=="gastosRapidos")
+           
+
+            try
             {
-                gasto.Concepto = "varios";
-                
-                
-            }
-            gasto.UsuarioId = int.Parse(HttpContext.Session.GetString("UsuarioId"));
+                int usuarioId = int.Parse(HttpContext.Session.GetString("UsuarioId"));
 
 
-            await _gastoService.AgregarGasto(gasto);
+
+                var gasto = new Gastos {
+
+                    Concepto = model.Concepto,
+                    Fecha = model.Fecha,
+                    Monto = model.Monto,
+                    UsuarioId = usuarioId
+
+
+                };
+                
+                
+                await _gastoService.AgregarGasto(gasto);
+                
+                
+                              
+                
+                TempData["MensajeGastos"] = "Gasto agregado correctamente.";
+                TempData["TipoMensajeGastos"] = "success"; // Para SweetAlert
+
+                return RedirectToAction("Index");
+                
             
 
-            if (origen == "gastosRapidos")
-            {
-                
-                return RedirectToAction("Index","DashBoard");
-
 
             }
+            catch (Exception ex)
+            {
+                TempData["MensajeProductos"] = ex.Message;
+                TempData["TipoMensajeProductos"] = "error";
+                return RedirectToAction("Index");
+            }
+            
 
-            TempData["MensajeGastos"] = "Gasto agregado correctamente.";
-            TempData["TipoMensajeGastos"] = "success"; // Para SweetAlert
 
 
-            return RedirectToAction("Index");
+
+
+
+
+
+
         }
 
 
@@ -103,9 +148,9 @@ namespace MVC_GestionVerdu.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Editar(Gastos gasto)
+        public async Task<IActionResult> Editar(GastoViewModel model)
         {
-            var gastoEditado = await _gastoService.GetGastoById(gasto.IdGasto);
+            var gastoEditado = await _gastoService.GetGastoById(model.Id);
 
             if (gastoEditado == null)
             {
@@ -116,9 +161,9 @@ namespace MVC_GestionVerdu.Controllers
 
             try
             {
-                gastoEditado.Concepto = gasto.Concepto;
-                gastoEditado.Fecha = gasto.Fecha;
-                gastoEditado.Monto = gasto.Monto;
+                gastoEditado.Concepto = model.Concepto;
+                gastoEditado.Fecha = model.Fecha;
+                gastoEditado.Monto = model.Monto;
 
                 await _gastoService.EditarGasto(gastoEditado);
 
